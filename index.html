@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local AI Studio - Own Your AI Models</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero .tagline {
+            font-size: 24px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        .hero .subtitle {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 60px;
+        }
+
+        /* Download Buttons */
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 60px auto;
+            max-width: 800px;
+        }
+
+        .code-block h3 {
+            color: #0ea5e9;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .code-block pre {
+            background: #000;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 80px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: #0ea5e9;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .feature-card p {
+            color: #94a3b8;
+        }
+
+        /* CTA Section */
+        .cta {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-radius: 24px;
+            margin: 60px 0;
+        }
+
+        .cta h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        .cta p {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+        }
+
+        .github-link {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .github-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero .tagline {
+                font-size: 18px;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                🤖 Local AI Studio
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Own Your AI Models</h1>
+                <p class="tagline">Pay once. Download forever. Run locally.</p>
+                <p class="subtitle">No subscriptions. No cloud dependency. Just $0.99 per model.</p>
+
+                <div class="download-buttons">
+                    <a href="https://github.com/woodman33/localai-studio-marketplace/archive/refs/heads/main.zip" class="btn btn-primary">
+                        🍎 Download for Mac
+                    </a>
+                    <a href="https://github.com/woodman33/localai-studio-marketplace/archive/refs/heads/main.zip" class="btn btn-secondary">
+                        🪟 Download for Windows
+                    </a>
+                    <a href="https://github.com/woodman33/localai-studio-marketplace/archive/refs/heads/main.zip" class="btn btn-secondary">
+                        🐧 Download for Linux
+                    </a>
+                </div>
+
+                <a href="/marketplace" class="btn btn-primary" style="margin-top: 20px;">
+                    🚀 Try Live Demo
+                </a>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="code-block">
+                <h3>🎯 Run Locally in 1 Command</h3>
+                <pre><code>git clone https://github.com/woodman33/localai-studio-marketplace.git
+cd localai-studio-marketplace
+docker-compose up -d
+
+# Visit http://localhost:3000</code></pre>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <h3>💰 Fair Pricing</h3>
+                    <p>$0.99 per model. Buy once, own forever. No hidden fees, no subscriptions, no vendor lock-in.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔒 Complete Privacy</h3>
+                    <p>Everything runs on your machine. Your data never leaves your device. True data sovereignty.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>⚡ Lightning Fast</h3>
+                    <p>No API rate limits. No network latency. Just pure local performance powered by Ollama.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🐳 Docker Ready</h3>
+                    <p>One command deployment with Docker Compose. Works on Mac M1/M2/M3, Windows, and Linux.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🎨 Beautiful UI</h3>
+                    <p>Clean, modern interface with dark mode. Browse models, purchase, and start chatting instantly.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🌟 9 Premium Models</h3>
+                    <p>Llama 3.2, Gemma 2, Phi-3.5, Qwen 2.5, Mistral 7B, DeepSeek, Codestral, and more.</p>
+                </div>
+            </div>
+
+            <div class="cta">
+                <h2>Ready to Own Your AI?</h2>
+                <p>Join developers who value privacy, performance, and fair pricing.</p>
+                <a href="https://github.com/woodman33/localai-studio-marketplace" class="btn btn-primary">
+                    ⭐ Star on GitHub
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Open source on <a href="https://github.com/woodman33/localai-studio-marketplace" class="github-link">GitHub</a></p>
+            <p style="margin-top: 10px;">Built with FastAPI, Ollama, and Docker 🚀</p>
+        </div>
+    </footer>
+</body>
+</html>

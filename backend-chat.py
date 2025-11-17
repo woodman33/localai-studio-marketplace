@@ -10,6 +10,7 @@ import asyncio
 import os
 import sqlite3
 import uuid
+import stripe
 from typing import Optional
 
 app = FastAPI(title="Local AI Studio Backend")
@@ -28,7 +29,12 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 # Stripe configuration (set these environment variables)
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+
+# Initialize Stripe
+if STRIPE_SECRET_KEY and not STRIPE_SECRET_KEY.startswith("PLACEHOLDER"):
+    stripe.api_key = STRIPE_SECRET_KEY
 
 # Model pricing - $0.99 each (TinyLlama is free)
 MODEL_PRICES = {
@@ -281,8 +287,8 @@ async def create_purchase_intent(
     user_id: Optional[str] = Cookie(None)
 ):
     """
-    Create purchase intent (returns checkout URL or confirms free model)
-    For MVP: Just record the purchase without Stripe (add Stripe later)
+    Create purchase intent - returns Stripe checkout URL
+    In test mode (SKIP_PAYMENT=true), instantly grants access
     """
     user_id = get_user_id(user_id)
 
@@ -309,11 +315,7 @@ async def create_purchase_intent(
             "user_id": user_id
         }
 
-    # For MVP: Simulate purchase (TODO: Add Stripe integration)
-    # In production, you would create a Stripe checkout session here
-
-    # For now, just record the "purchase" (remove this in production)
-    # This lets you test the full flow without Stripe setup
+    # Test mode - skip payment
     if os.getenv("SKIP_PAYMENT", "false").lower() == "true":
         record_purchase(user_id, model_id, "test_" + str(uuid.uuid4()))
         return {
@@ -324,30 +326,83 @@ async def create_purchase_intent(
             "user_id": user_id
         }
 
-    # Production: Return Stripe checkout URL
-    # TODO: Implement Stripe checkout session creation
-    return {
-        "status": "payment_required",
-        "message": "Stripe integration coming soon!",
-        "model": model_id,
-        "price": price,
-        "user_id": user_id,
-        "note": "Set SKIP_PAYMENT=true to test without Stripe"
-    }
+    # Production: Create Stripe checkout session
+    if not STRIPE_SECRET_KEY or STRIPE_SECRET_KEY.startswith("PLACEHOLDER"):
+        raise HTTPException(500, "Stripe not configured. Set STRIPE_SECRET_KEY or enable SKIP_PAYMENT=true for testing.")
+
+    try:
+        # Create Stripe checkout session
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': int(price * 100),  # Convert to cents
+                    'product_data': {
+                        'name': f'AI Model: {model_id}',
+                        'description': f'One-time purchase for {model_id} - download and run locally forever',
+                    },
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=f'{os.getenv("FRONTEND_URL", "http://localhost:3000")}/marketplace?success=true&model={model_id}',
+            cancel_url=f'{os.getenv("FRONTEND_URL", "http://localhost:3000")}/marketplace?canceled=true',
+            metadata={
+                'user_id': user_id,
+                'model_id': model_id,
+            }
+        )
+
+        return {
+            "status": "payment_required",
+            "checkout_url": checkout_session.url,
+            "session_id": checkout_session.id,
+            "model": model_id,
+            "price": price,
+            "user_id": user_id
+        }
+
+    except Exception as e:
+        raise HTTPException(500, f"Failed to create checkout session: {str(e)}")
 
 @app.post("/api/stripe/webhook")
 async def stripe_webhook(request: Request):
     """
-    Handle Stripe webhook events (TODO: Implement when Stripe is configured)
+    Handle Stripe webhook events for completed payments
     """
     if not STRIPE_SECRET_KEY or not STRIPE_WEBHOOK_SECRET:
         raise HTTPException(501, "Stripe not configured")
 
-    # TODO: Verify webhook signature
-    # TODO: Handle checkout.session.completed event
-    # TODO: Record purchase in database
+    payload = await request.body()
+    sig_header = request.headers.get('stripe-signature')
 
-    return {"status": "webhook_received"}
+    try:
+        # Verify webhook signature
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError:
+        raise HTTPException(400, "Invalid payload")
+    except stripe.error.SignatureVerificationError:
+        raise HTTPException(400, "Invalid signature")
+
+    # Handle checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+
+        # Extract metadata
+        user_id = session['metadata'].get('user_id')
+        model_id = session['metadata'].get('model_id')
+
+        if user_id and model_id:
+            # Record the purchase
+            record_purchase(user_id, model_id, session['id'])
+            print(f"✅ Purchase recorded: {user_id} bought {model_id}")
+        else:
+            print(f"⚠️ Missing metadata in webhook: {session['metadata']}")
+
+    return {"status": "success"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
