@@ -80,12 +80,12 @@ class ChatResponse(BaseModel):
 class InstallRequest(BaseModel):
     model: str
 
-@app.get("/health")
+@app.get("/api/health")
 async def health():
     """Health check endpoint"""
     return {"status": "healthy", "service": "Local AI Studio Backend"}
 
-@app.post("/chat", response_model=ChatResponse)
+@app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
     Chat endpoint that routes to Ollama
