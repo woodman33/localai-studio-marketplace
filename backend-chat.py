@@ -46,10 +46,16 @@ MODEL_PRICES = {
     "mistral:7b-instruct-v0.3": 0.99,
 }
 
+# Database path - use mounted volume for persistence
+DB_PATH = os.path.join('/app/data', 'purchases.db')
+
 # Initialize SQLite database for purchases
 def init_db():
     """Create purchases database if it doesn't exist"""
-    conn = sqlite3.connect('purchases.db')
+    # Ensure data directory exists
+    os.makedirs('/app/data', exist_ok=True)
+
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS purchases
                  (user_id TEXT NOT NULL,
@@ -240,7 +246,7 @@ def has_purchased_model(user_id: str, model_id: str) -> bool:
     if model_id == "tinyllama:latest":
         return True
 
-    conn = sqlite3.connect('purchases.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('SELECT 1 FROM purchases WHERE user_id = ? AND model_id = ?',
               (user_id, model_id))
@@ -250,7 +256,7 @@ def has_purchased_model(user_id: str, model_id: str) -> bool:
 
 def record_purchase(user_id: str, model_id: str, stripe_session_id: str = ""):
     """Record a model purchase"""
-    conn = sqlite3.connect('purchases.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''INSERT OR IGNORE INTO purchases
                  (user_id, model_id, stripe_session_id)
@@ -268,7 +274,7 @@ async def get_owned_models(user_id: Optional[str] = Cookie(None)):
     owned = ["tinyllama:latest"]
 
     # Get purchased models
-    conn = sqlite3.connect('purchases.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('SELECT model_id FROM purchases WHERE user_id = ?', (user_id,))
     purchased = [row[0] for row in c.fetchall()]
