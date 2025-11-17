@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # DO NOT START OLLAMA - Using existing shared container on host
+  # The existing Ollama at port 11434 will be accessed via host.docker.internal
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    image: localai-marketplace-backend:latest
+    container_name: localai-marketplace-backend
+    ports:
+      - "127.0.0.1:8000:8000"  # Bind to localhost only
+    environment:
+      # Point to host's Ollama container
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_PLACEHOLDER}
+      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY:-pk_test_PLACEHOLDER}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-whsec_PLACEHOLDER}
+      - SKIP_PAYMENT=${SKIP_PAYMENT:-true}
+      - FRONTEND_URL=${FRONTEND_URL:-https://localai.studio}
+      # Production optimizations
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - backend-data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Allow access to host's Ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    image: nginx:alpine
+    container_name: localai-marketplace-frontend
+    ports:
+      - "127.0.0.1:3001:80"  # Port 3001 to avoid conflict with Open WebUI on 3000
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./local-ai-studio-with-affiliates.html:/usr/share/nginx/html/marketplace.html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  backend-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /root/localai-studio-marketplace/data/backend
+
+networks:
+  default:
+    name: localai-marketplace-network
+    driver: bridge
