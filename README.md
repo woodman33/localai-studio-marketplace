@@ -21,25 +21,37 @@ Run powerful AI models like Llama, Mistral, and CodeLlama on your own hardware w
 
 ---
 
-## 🚀 ONE-CLICK INSTALL
+## 🚀 INSTANT INSTALL
 
-### 🍎 Mac & Linux
+### 🍎 Mac (Double-Click Install)
+
+1. **Download:** [INSTALL-MAC.command](https://raw.githubusercontent.com/woodman33/localai-studio-marketplace/main/INSTALL-MAC.command)
+2. **Double-click** the downloaded file
+3. **Done!** Browser opens automatically at http://localhost:3000
+
+### 🐧 Linux (One-Line Install)
 
 ```bash
-git clone https://github.com/woodman33/localai-studio-marketplace.git
-cd localai-studio-marketplace
-bash INSTALL-MAC-LINUX.sh
+curl -fsSL https://raw.githubusercontent.com/woodman33/localai-studio-marketplace/main/INSTALL-MAC-LINUX.sh | bash
 ```
 
 ### 🪟 Windows
 
-```batch
+1. **Download:** [INSTALL-WINDOWS.bat](https://raw.githubusercontent.com/woodman33/localai-studio-marketplace/main/INSTALL-WINDOWS.bat)
+2. **Double-click** the downloaded file
+3. **Done!** Open http://localhost:3000
+
+---
+
+## 📦 Alternative: Git Clone Method
+
+```bash
 git clone https://github.com/woodman33/localai-studio-marketplace.git
 cd localai-studio-marketplace
-INSTALL-WINDOWS.bat
+bash INSTALL-MAC-LINUX.sh    # Mac/Linux
+# OR
+INSTALL-WINDOWS.bat           # Windows
 ```
-
-**That's it!** Open http://localhost:3000 in your browser.
 
 ---
 
