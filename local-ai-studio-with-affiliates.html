@@ -1581,12 +1581,12 @@
         // Check backend health on load
         async function checkBackend() {
             try {
-                const response = await fetch('/health');
+                const response = await fetch('/api/health');
                 if (response.ok) {
-                    console.log('Backend connected');
+                    console.log('✅ Backend connected and healthy');
                 }
             } catch (error) {
-                console.log('Backend check:', error.message);
+                console.log('⚠️ Backend check failed:', error.message);
             }
         }
 
