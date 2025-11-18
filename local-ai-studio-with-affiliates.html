@@ -122,88 +122,97 @@
             color: var(--text-secondary);
         }
 
-        #modelSelect {
-            background: rgba(255, 255, 255, 0.08);
+        /* Custom Dropdown Styles */
+        .custom-select {
+            position: relative;
+            min-width: 250px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .select-selected {
+            background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(0, 217, 255, 0.3);
             border-radius: 12px;
-            padding: 0.625rem 1rem;
-            color: var(--text);
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            color: #ffffff;
             font-family: 'Inter', sans-serif;
             font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            min-width: 200px;
+            font-weight: 600;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            /* Force appearance reset for cross-browser consistency */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            /* Add dropdown arrow */
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.7rem center;
-            background-size: 1.2em;
-            padding-right: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
-        #modelSelect:hover {
-            background-color: rgba(255, 255, 255, 0.12);
-            border-color: rgba(0, 217, 255, 0.4);
-            box-shadow: 0 4px 16px rgba(0, 217, 255, 0.15);
-            transform: translateY(-1px);
+        .select-selected::after {
+            content: "▼";
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00D9FF;
+            font-size: 0.7rem;
         }
 
-        #modelSelect:focus {
-            outline: none;
-            border-color: var(--cyan);
-            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        .custom-select.open .select-selected::after {
+            transform: translateY(-50%) rotate(180deg);
         }
 
-        /* Force option styles with maximum specificity */
-        #modelSelect option {
-            background-color: #1e293b !important;
-            color: #ffffff !important;
-            padding: 0.75rem !important;
-            font-weight: 500 !important;
-            opacity: 1 !important;
-            font-family: 'Inter', sans-serif !important;
+        .select-selected:hover {
+            background: rgba(30, 41, 59, 1);
+            border-color: rgba(0, 217, 255, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 217, 255, 0.2);
         }
 
-        #modelSelect option:hover,
-        #modelSelect option:focus,
-        #modelSelect option:checked {
-            background: linear-gradient(to right, #0066CC, #00D9FF) !important;
-            color: #ffffff !important;
+        .select-items {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
         }
 
-        #modelSelect option:disabled {
-            color: #6b7280 !important;
-            background-color: #0f172a !important;
-            opacity: 0.7 !important;
+        .custom-select.open .select-items {
+            display: block;
         }
 
-        #modelSelect optgroup {
-            background-color: #0f172a !important;
-            color: #00D9FF !important;
-            font-weight: 700 !important;
-            opacity: 1 !important;
-            font-size: 0.9rem !important;
-            padding: 0.5rem !important;
+        .select-group-label {
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #00D9FF;
+            background: rgba(0, 217, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
         }
 
-        /* Additional webkit-specific fixes for Safari */
-        @media screen and (-webkit-min-device-pixel-ratio: 0) {
-            #modelSelect {
-                background-color: rgba(30, 41, 59, 0.95);
-            }
+        .select-option {
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
 
-            #modelSelect option {
-                background-color: #1e293b !important;
-                color: white !important;
-            }
+        .select-option:hover {
+            background: linear-gradient(90deg, rgba(0, 217, 255, 0.2), rgba(16, 185, 129, 0.2));
+            padding-left: 1.25rem;
+        }
+
+        .select-option.selected {
+            background: rgba(0, 217, 255, 0.15);
+            border-left: 3px solid #00D9FF;
         }
 
         .status-badge {
@@ -1010,18 +1019,20 @@
         <div class="header-controls">
             <div class="model-selector">
                 <label for="modelSelect">Model:</label>
-                <select id="modelSelect">
-                    <optgroup label="⚡ FREE - Pre-installed">
-                        <option value="tinyllama:latest" selected>TinyLlama 1.1B (Ready Now) - FREE</option>
-                    </optgroup>
-                    <optgroup label="💎 Premium Local Models - $0.99 each">
-                        <option value="llama3.2:3b">Llama 3.2 3B - $0.99</option>
-                        <option value="gemma2:2b">Gemma 2 2B - $0.99</option>
-                        <option value="phi3.5:mini">Phi-3.5 Mini - $0.99</option>
-                        <option value="qwen2.5:7b">Qwen 2.5 7B - $0.99</option>
-                        <option value="mistral:7b-instruct-v0.3">Mistral 7B - $0.99</option>
-                    </optgroup>
-                </select>
+                <div class="custom-select" id="customSelect">
+                    <div class="select-selected">TinyLlama 1.1B (Ready Now) - FREE</div>
+                    <div class="select-items" id="selectItems">
+                        <div class="select-group-label">⚡ FREE - Pre-installed</div>
+                        <div data-value="tinyllama:latest" class="select-option selected">TinyLlama 1.1B (Ready Now) - FREE</div>
+                        <div class="select-group-label">💎 Premium Local Models - $0.99 each</div>
+                        <div data-value="llama3.2:3b" class="select-option">Llama 3.2 3B - $0.99</div>
+                        <div data-value="gemma2:2b" class="select-option">Gemma 2 2B - $0.99</div>
+                        <div data-value="phi3.5:mini" class="select-option">Phi-3.5 Mini - $0.99</div>
+                        <div data-value="qwen2.5:7b" class="select-option">Qwen 2.5 7B - $0.99</div>
+                        <div data-value="mistral:7b-instruct-v0.3" class="select-option">Mistral 7B - $0.99</div>
+                    </div>
+                </div>
+                <input type="hidden" id="modelSelect" value="tinyllama:latest">
             </div>
             <div class="status-badge">
                 <span class="status-dot"></span>
@@ -1342,45 +1353,106 @@
 
         let isWelcomeVisible = true;
 
+        // Custom Dropdown Functionality
+        const customSelect = document.getElementById('customSelect');
+        const selectSelected = customSelect.querySelector('.select-selected');
+        const selectItems = customSelect.querySelector('.select-items');
+        const selectOptions = customSelect.querySelectorAll('.select-option');
+        const hiddenSelect = document.getElementById('modelSelect');
+
+        // Toggle dropdown
+        selectSelected.addEventListener('click', function(e) {
+            e.stopPropagation();
+            customSelect.classList.toggle('open');
+            console.log('Dropdown toggled:', customSelect.classList.contains('open'));
+        });
+
+        // Handle option selection
+        selectOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.getAttribute('data-value');
+                const text = this.textContent;
+
+                // Update selected option
+                selectOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+
+                // Update display
+                selectSelected.textContent = text;
+                hiddenSelect.value = value;
+
+                // Close dropdown
+                customSelect.classList.remove('open');
+
+                console.log('Model selected:', text, value);
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            customSelect.classList.remove('open');
+        });
+
         // Scroll to marketplace section
         function scrollToMarketplace() {
+            console.log('🔵 scrollToMarketplace() called');
             const messagesContainer = document.getElementById('messages');
             const modelsSection = document.querySelector('.models-section');
 
+            console.log('📍 Elements found:', {
+                messagesContainer: !!messagesContainer,
+                modelsSection: !!modelsSection
+            });
+
             if (messagesContainer && modelsSection) {
+                console.log('✅ Both elements exist, proceeding...');
+
                 // First, make sure the models section is visible
                 modelsSection.style.display = 'block';
                 isWelcomeVisible = true;
+                console.log('✅ Set models section display to block');
 
                 // Clear any existing messages to show the marketplace
                 messagesContainer.innerHTML = '';
+                console.log('✅ Cleared messages container');
+
                 messagesContainer.appendChild(modelsSection);
+                console.log('✅ Appended models section to container');
 
                 // Scroll to the top of the messages container to show the marketplace
                 messagesContainer.scrollTo({
                     top: 0,
                     behavior: 'smooth'
                 });
+                console.log('✅ Scrolled to top');
 
                 // Alternative: if the models section is already in view, scroll to the grid
                 setTimeout(() => {
                     const modelsGrid = document.querySelector('.models-grid');
                     if (modelsGrid) {
+                        console.log('✅ Models grid found, checking visibility...');
                         const gridRect = modelsGrid.getBoundingClientRect();
                         const containerRect = messagesContainer.getBoundingClientRect();
 
                         // Check if grid is not fully visible
                         if (gridRect.top < containerRect.top || gridRect.bottom > containerRect.bottom) {
                             const scrollTop = messagesContainer.scrollTop + (gridRect.top - containerRect.top) - 20;
+                            console.log('🔄 Fine-tuning scroll position to:', scrollTop);
                             messagesContainer.scrollTo({
                                 top: scrollTop,
                                 behavior: 'smooth'
                             });
+                        } else {
+                            console.log('✅ Grid is already fully visible');
                         }
                     }
                 }, 100);
             } else {
-                console.error('Could not find messages container or models section');
+                console.error('❌ Could not find messages container or models section', {
+                    messagesContainer: messagesContainer,
+                    modelsSection: modelsSection
+                });
             }
         }
 
