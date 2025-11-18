@@ -1486,7 +1486,8 @@
                 isWelcomeVisible = false;
             }
 
-            const currentModel = modelSelect.options[modelSelect.selectedIndex].text;
+            // Get selected model text from custom dropdown
+            const currentModel = selectSelected.textContent;
 
             // Add user message
             addMessage('user', message, currentModel);
