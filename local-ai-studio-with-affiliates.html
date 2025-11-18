@@ -137,10 +137,20 @@
             min-width: 200px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            /* Force appearance reset for cross-browser consistency */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* Add dropdown arrow */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1.2em;
+            padding-right: 2.5rem;
         }
 
         #modelSelect:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background-color: rgba(255, 255, 255, 0.12);
             border-color: rgba(0, 217, 255, 0.4);
             box-shadow: 0 4px 16px rgba(0, 217, 255, 0.15);
             transform: translateY(-1px);
@@ -152,25 +162,48 @@
             box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
         }
 
+        /* Force option styles with maximum specificity */
         #modelSelect option {
-            background: #ffffff !important;
-            color: #000000 !important;
-            padding: 0.5rem;
-            font-weight: 600 !important;
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            padding: 0.75rem !important;
+            font-weight: 500 !important;
             opacity: 1 !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        #modelSelect option:hover,
+        #modelSelect option:focus,
+        #modelSelect option:checked {
+            background: linear-gradient(to right, #0066CC, #00D9FF) !important;
+            color: #ffffff !important;
         }
 
         #modelSelect option:disabled {
-            color: #333333 !important;
-            background: #f0f0f0 !important;
-            opacity: 1 !important;
+            color: #6b7280 !important;
+            background-color: #0f172a !important;
+            opacity: 0.7 !important;
         }
 
         #modelSelect optgroup {
-            background: #e8e8e8 !important;
-            color: #000000 !important;
+            background-color: #0f172a !important;
+            color: #00D9FF !important;
             font-weight: 700 !important;
             opacity: 1 !important;
+            font-size: 0.9rem !important;
+            padding: 0.5rem !important;
+        }
+
+        /* Additional webkit-specific fixes for Safari */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            #modelSelect {
+                background-color: rgba(30, 41, 59, 0.95);
+            }
+
+            #modelSelect option {
+                background-color: #1e293b !important;
+                color: white !important;
+            }
         }
 
         .status-badge {
@@ -977,16 +1010,16 @@
         <div class="header-controls">
             <div class="model-selector">
                 <label for="modelSelect">Model:</label>
-                <select id="modelSelect" style="background: #1e293b; color: #ffffff; border: 1px solid rgba(0, 217, 255, 0.2);">
-                    <optgroup label="⚡ FREE - Pre-installed" style="background: #0f172a; color: #10b981; font-weight: 700;">
-                        <option value="tinyllama:latest" selected style="background: #1e293b; color: #ffffff; font-weight: 600; padding: 8px;">TinyLlama 1.1B (Ready Now) - FREE</option>
+                <select id="modelSelect">
+                    <optgroup label="⚡ FREE - Pre-installed">
+                        <option value="tinyllama:latest" selected>TinyLlama 1.1B (Ready Now) - FREE</option>
                     </optgroup>
-                    <optgroup label="💎 Premium Local Models - $0.99 each" style="background: #0f172a; color: #0ea5e9; font-weight: 700;">
-                        <option value="llama3.2:3b" style="background: #1e293b; color: #ffffff; font-weight: 600; padding: 8px;">Llama 3.2 3B - $0.99</option>
-                        <option value="gemma2:2b" style="background: #1e293b; color: #ffffff; font-weight: 600; padding: 8px;">Gemma 2 2B - $0.99</option>
-                        <option value="phi3.5:mini" style="background: #1e293b; color: #ffffff; font-weight: 600; padding: 8px;">Phi-3.5 Mini - $0.99</option>
-                        <option value="qwen2.5:7b" style="background: #1e293b; color: #ffffff; font-weight: 600; padding: 8px;">Qwen 2.5 7B - $0.99</option>
-                        <option value="mistral:7b-instruct-v0.3" style="background: #1e293b; color: #ffffff; font-weight: 600; padding: 8px;">Mistral 7B - $0.99</option>
+                    <optgroup label="💎 Premium Local Models - $0.99 each">
+                        <option value="llama3.2:3b">Llama 3.2 3B - $0.99</option>
+                        <option value="gemma2:2b">Gemma 2 2B - $0.99</option>
+                        <option value="phi3.5:mini">Phi-3.5 Mini - $0.99</option>
+                        <option value="qwen2.5:7b">Qwen 2.5 7B - $0.99</option>
+                        <option value="mistral:7b-instruct-v0.3">Mistral 7B - $0.99</option>
                     </optgroup>
                 </select>
             </div>
@@ -1312,28 +1345,42 @@
         // Scroll to marketplace section
         function scrollToMarketplace() {
             const messagesContainer = document.getElementById('messages');
-            const marketplace = document.querySelector('.models-grid');
+            const modelsSection = document.querySelector('.models-section');
 
-            if (messagesContainer && marketplace) {
-                // Calculate position of marketplace within messages container
-                const containerRect = messagesContainer.getBoundingClientRect();
-                const marketplaceRect = marketplace.getBoundingClientRect();
-                const scrollOffset = marketplaceRect.top - containerRect.top + messagesContainer.scrollTop;
+            if (messagesContainer && modelsSection) {
+                // First, make sure the models section is visible
+                modelsSection.style.display = 'block';
+                isWelcomeVisible = true;
 
-                // Smooth scroll within messages container
+                // Clear any existing messages to show the marketplace
+                messagesContainer.innerHTML = '';
+                messagesContainer.appendChild(modelsSection);
+
+                // Scroll to the top of the messages container to show the marketplace
                 messagesContainer.scrollTo({
-                    top: scrollOffset - 20, // 20px offset for padding
+                    top: 0,
                     behavior: 'smooth'
                 });
+
+                // Alternative: if the models section is already in view, scroll to the grid
+                setTimeout(() => {
+                    const modelsGrid = document.querySelector('.models-grid');
+                    if (modelsGrid) {
+                        const gridRect = modelsGrid.getBoundingClientRect();
+                        const containerRect = messagesContainer.getBoundingClientRect();
+
+                        // Check if grid is not fully visible
+                        if (gridRect.top < containerRect.top || gridRect.bottom > containerRect.bottom) {
+                            const scrollTop = messagesContainer.scrollTop + (gridRect.top - containerRect.top) - 20;
+                            messagesContainer.scrollTo({
+                                top: scrollTop,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                }, 100);
             } else {
-                // Fallback: scroll to top of messages container
-                const modelsSection = document.querySelector('.models-section');
-                if (modelsSection && messagesContainer) {
-                    messagesContainer.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                }
+                console.error('Could not find messages container or models section');
             }
         }
 
