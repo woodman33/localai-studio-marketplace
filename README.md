@@ -1,48 +1,71 @@
-# 🤖 Local AI Studio - Own Your AI Models
+# Local AI Studio
 
-**Pay once. Download forever. Run locally.**
+**Your Private AI Playground - 100% Local, Zero Cloud**
 
-No subscriptions. No cloud dependency. Just $0.99 per model.
+Run powerful AI models like Llama, Mistral, and CodeLlama on your own hardware with a beautiful ChatGPT-like interface. No API keys, no subscriptions, no data leaving your computer.
 
-[![GitHub stars](https://img.shields.io/github/stars/woodman33/localai-studio-marketplace?style=social)](https://github.com/woodman33/localai-studio-marketplace)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](https://www.docker.com/)
+![Local AI Studio](https://img.shields.io/badge/AI-100%25%20Local-00D9FF?style=for-the-badge&logo=artificial-intelligence)
+![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-Required-2496ED?style=for-the-badge&logo=docker)
 
-## 🎯 Features
+---
 
-- **💰 Fair Pricing** - $0.99 per model, buy once and own forever
-- **🔒 Complete Privacy** - Everything runs on your machine, your data stays local
-- **⚡ Lightning Fast** - No API rate limits, no network latency
-- **🐳 Docker Ready** - One command deployment with Docker Compose
-- **🎨 Beautiful UI** - Clean, modern interface with dark mode
-- **🌟 9 Premium Models** - Llama 3.2, Gemma 2, Phi-3.5, Qwen, Mistral, and more
+## ✨ Features
 
-## 🚀 Quick Start
+- 🚀 **One-Click Model Installation** - 11 models including Llama 3.1, CodeLlama, Mistral
+- 💬 **ChatGPT-like Interface** - Clean, intuitive chat UI
+- 🔒 **100% Private** - Your data never leaves your machine
+- ⚡ **Fast & Local** - Powered by Ollama for optimized performance
+- 🎨 **Beautiful Dark Theme** - Professional UI with smooth animations
+- 📦 **Easy Setup** - One command to install everything
 
-### Prerequisites
+---
 
-- Docker & Docker Compose
-- 8GB RAM minimum (16GB recommended)
-- Mac M1/M2/M3 (Apple Silicon optimized) or x86_64 Linux
+## 🚀 ONE-CLICK INSTALL
 
-### Run Locally in 1 Command
+### 🍎 Mac & Linux
 
 ```bash
 git clone https://github.com/woodman33/localai-studio-marketplace.git
 cd localai-studio-marketplace
-cp .env.example .env
-docker-compose up -d
+bash INSTALL-MAC-LINUX.sh
 ```
 
-**Visit:** http://localhost:3000
+### 🪟 Windows
 
-## 📦 What's Included
+```batch
+git clone https://github.com/woodman33/localai-studio-marketplace.git
+cd localai-studio-marketplace
+INSTALL-WINDOWS.bat
+```
 
-- **FastAPI Backend** - Purchase tracking, model management
-- **Ollama Engine** - Local LLM inference
-- **Beautiful Frontend** - Hero landing page + marketplace
-- **Stripe Integration** - Ready for $0.99 payments
-- **SQLite Database** - Purchase tracking
+**That's it!** Open http://localhost:3000 in your browser.
+
+---
+
+## 📋 Requirements
+
+- **Docker Desktop** installed and running
+  - [Mac](https://docs.docker.com/desktop/install/mac-install/)
+  - [Windows](https://docs.docker.com/desktop/install/windows-install/)
+  - [Linux](https://docs.docker.com/engine/install/)
+- **8GB RAM minimum** (16GB recommended)
+- **10GB free disk space** (more for additional models)
+
+## 🎯 What's Included
+
+### Pre-Installed
+- **TinyLlama 1.1B** - Fast, lightweight model (ready immediately)
+
+### Available Models (One-Click Install)
+- **Llama 3.2 3B** - Efficient general-purpose model
+- **Llama 3.1 8B** - Balanced power and speed
+- **CodeLlama 7B** - Specialized for code generation
+- **Mistral 7B Instruct** - Powerful open-source model
+- **Phi-3 Mini & Medium** - Microsoft's efficient models
+- **Gemma 2 2B & 9B** - Google's latest models
+- **Qwen 2.5 7B** - Alibaba's multilingual model
+- **Deepseek Coder 6.7B** - Code completion specialist
 
 ## 🔧 Configuration
 
