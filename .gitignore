@@ -36,3 +36,9 @@ Thumbs.db
 # Backups
 *.backup
 *.bak
+
+# Personal Gemini integration (local only)
+GEMINI_3_PRO_DOCS.md
+GEMINI_EXAMPLES.py
+GEMINI_SETUP.md
+gemini_helper.py
