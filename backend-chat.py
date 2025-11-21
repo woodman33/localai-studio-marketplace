@@ -658,19 +658,26 @@ async def validate_license(request: LicenseRequest):
             "message": f"Validation error: {str(e)}"
         })
 
+from fastapi import FastAPI, HTTPException, Cookie, Request, Query
+
+# ... (imports remain the same)
+
 @app.get("/api/license/check")
-async def check_license(license_key: Optional[str] = Cookie(None)):
+async def check_license(license_key: Optional[str] = Query(None), cookie_key: Optional[str] = Cookie(None, alias="license_key")):
     """
     Check user's current tier based on license key
     Returns available models for their tier
 
-    Frontend can pass license key via cookie (stored in localStorage)
+    Frontend can pass license key via query param (from localStorage) or cookie
     """
+    # Prefer query param (from localStorage), fallback to cookie
+    final_key = license_key if license_key else cookie_key
+    
     print(f"\n[LICENSE CHECK] Checking license status...")
-    print(f"[LICENSE CHECK] License key from cookie: {license_key[:20] + '...' if license_key and len(license_key) > 20 else license_key}")
+    print(f"[LICENSE CHECK] License key: {final_key[:20] + '...' if final_key and len(final_key) > 20 else final_key}")
 
     # No license = free tier
-    if not license_key:
+    if not final_key:
         print("[LICENSE CHECK] No license key provided - returning free tier")
         return JSONResponse({
             "tier": "free",
@@ -679,7 +686,7 @@ async def check_license(license_key: Optional[str] = Cookie(None)):
         })
 
     # Check cache first
-    if license_key in VALID_LICENSES:
+    if final_key in VALID_LICENSES:
         print(f"[LICENSE CHECK] ✅ License key found in cache - returning pro tier")
         return JSONResponse({
             "tier": "pro",
@@ -691,7 +698,7 @@ async def check_license(license_key: Optional[str] = Cookie(None)):
 
     # Validate license (adds to cache if valid)
     try:
-        validation_result = await validate_license(LicenseRequest(license_key=license_key))
+        validation_result = await validate_license(LicenseRequest(license_key=final_key))
 
         # Extract JSON from JSONResponse if needed
         if isinstance(validation_result, JSONResponse):

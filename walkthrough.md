@@ -68,4 +68,11 @@ You can test the UI flow immediately without buying anything:
 
 - Use the "Upgrade to Pro" button to buy the product (or use a test card if Gumroad is in test mode).
 - Check your email for the **Order ID**.
-- Enter the Order ID into the activation box.
+
+### 3. Verify License Persistence
+
+1.  **Activate Pro**: Enter `DEV-TEST` (or a real key) in the "Upgrade to Pro" modal.
+2.  **Verify Activation**: Ensure UI shows "Pro Activated".
+3.  **Reload Page**: Refresh the browser.
+4.  **Verify Persistence**: Ensure Pro mode is still active without re-entering the key.
+    - _Note: The system now automatically checks your saved key on every page load._
