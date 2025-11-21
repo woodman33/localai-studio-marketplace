@@ -41,7 +41,7 @@ if STRIPE_SECRET_KEY and not STRIPE_SECRET_KEY.startswith("PLACEHOLDER"):
 
 # Gumroad configuration for instant monetization
 GUMROAD_API_KEY = os.getenv("GUMROAD_API_KEY", "")
-GUMROAD_PRODUCT_PERMALINK = os.getenv("GUMROAD_PRODUCT_PERMALINK", "localai-studio-pro")
+GUMROAD_PRODUCT_PERMALINK = os.getenv("GUMROAD_PRODUCT_PERMALINK", "udody")
 
 # License key cache (upgrade to DB later if needed)
 VALID_LICENSES = set()
@@ -565,11 +565,14 @@ async def validate_license(request: LicenseRequest):
             # If license verification fails, try order ID lookup
             if response.status_code != 200 or not response.json().get("success", False):
                 print(f"[LICENSE VALIDATE] License verification failed, trying order ID lookup...")
+                
+                # Note: We don't pass product_id here because we only have the permalink
+                # and v2/sales expects a product ID (not permalink) for filtering.
+                # We'll verify the product in the response instead.
                 sales_response = await client.get(
                     "https://api.gumroad.com/v2/sales",
                     params={
-                        "order_id": license_key,
-                        "product_id": GUMROAD_PRODUCT_PERMALINK
+                        "order_id": license_key
                     },
                     headers={"Authorization": f"Bearer {GUMROAD_API_KEY}"}
                 )
@@ -578,14 +581,21 @@ async def validate_license(request: LicenseRequest):
                     sales_data = sales_response.json()
                     if sales_data.get("success") and len(sales_data.get("sales", [])) > 0:
                         sale = sales_data["sales"][0]
-                        print(f"[LICENSE VALIDATE] ✅ Valid order ID: {license_key}")
-                        VALID_LICENSES.add(license_key)
-                        return JSONResponse({
-                            "valid": True,
-                            "tier": "pro",
-                            "purchaser_email": sale.get("email", "unknown"),
-                            "message": "Valid Pro license (verified via order ID)"
-                        })
+                        
+                        # Verify this sale is for our product
+                        sale_permalink = sale.get("product_permalink", "")
+                        # Handle case where permalink might be full URL or just the slug
+                        if GUMROAD_PRODUCT_PERMALINK in sale_permalink:
+                            print(f"[LICENSE VALIDATE] ✅ Valid order ID: {license_key}")
+                            VALID_LICENSES.add(license_key)
+                            return JSONResponse({
+                                "valid": True,
+                                "tier": "pro",
+                                "purchaser_email": sale.get("email", "unknown"),
+                                "message": "Valid Pro license (verified via order ID)"
+                            })
+                        else:
+                            print(f"[LICENSE VALIDATE] ❌ Order found but for different product: {sale_permalink}")
 
                 print(f"[LICENSE VALIDATE] Both license key and order ID validation failed")
                 return JSONResponse({
