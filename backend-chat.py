@@ -552,6 +552,7 @@ async def validate_license(request: LicenseRequest):
         print(f"[LICENSE VALIDATE] API key configured: {GUMROAD_API_KEY[:10]}...")
 
         async with httpx.AsyncClient(timeout=10.0) as client:
+            # Try license key verification first
             response = await client.post(
                 "https://api.gumroad.com/v2/licenses/verify",
                 data={
@@ -560,6 +561,37 @@ async def validate_license(request: LicenseRequest):
                 },
                 headers={"Authorization": f"Bearer {GUMROAD_API_KEY}"}
             )
+
+            # If license verification fails, try order ID lookup
+            if response.status_code != 200 or not response.json().get("success", False):
+                print(f"[LICENSE VALIDATE] License verification failed, trying order ID lookup...")
+                sales_response = await client.get(
+                    "https://api.gumroad.com/v2/sales",
+                    params={
+                        "order_id": license_key,
+                        "product_id": GUMROAD_PRODUCT_PERMALINK
+                    },
+                    headers={"Authorization": f"Bearer {GUMROAD_API_KEY}"}
+                )
+
+                if sales_response.status_code == 200:
+                    sales_data = sales_response.json()
+                    if sales_data.get("success") and len(sales_data.get("sales", [])) > 0:
+                        sale = sales_data["sales"][0]
+                        print(f"[LICENSE VALIDATE] ✅ Valid order ID: {license_key}")
+                        VALID_LICENSES.add(license_key)
+                        return JSONResponse({
+                            "valid": True,
+                            "tier": "pro",
+                            "purchaser_email": sale.get("email", "unknown"),
+                            "message": "Valid Pro license (verified via order ID)"
+                        })
+
+                print(f"[LICENSE VALIDATE] Both license key and order ID validation failed")
+                return JSONResponse({
+                    "valid": False,
+                    "message": "Invalid license key or order ID"
+                })
 
             print(f"[LICENSE VALIDATE] Gumroad response status: {response.status_code}")
             print(f"[LICENSE VALIDATE] Gumroad response body: {response.text[:500]}")
