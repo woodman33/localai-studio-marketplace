@@ -2926,66 +2926,59 @@
         activateBtn.style.cursor = "wait";
 
         try {
-          // Use proper backend URL
-          const response = await fetch(
-            "http://localhost:8000/api/license/validate",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ license_key: licenseKey }),
-            }
-          );
+          // Use relative path for production compatibility
+        const response = await fetch('/api/license/validate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ license_key: licenseKey })
+        });
 
-          const data = await response.json();
+        const data = await response.json();
 
-          if (response.ok && data.valid) {
+        if (response.ok && data.valid) {
             // Save license key
-            localStorage.setItem("licenseKey", licenseKey);
+            localStorage.setItem('licenseKey', licenseKey);
 
             // Update tier
-            currentTier = "pro";
+            currentTier = 'pro';
             setProTier();
 
             // Show success message
-            licenseSuccess.textContent =
-              "✅ Pro Activated! All 9 models unlocked.";
-            licenseSuccess.classList.add("visible");
-            licenseKeyInput.value = "";
+            licenseSuccess.textContent = '✅ Pro Activated! All 9 models unlocked.';
+            licenseSuccess.classList.add('visible');
+            licenseKeyInput.value = '';
 
             // Close modal after 2 seconds
             setTimeout(() => {
-              closeUpgradeModal();
-              licenseSuccess.classList.remove("visible");
+                closeUpgradeModal();
+                licenseSuccess.classList.remove('visible');
             }, 2000);
 
-            console.log("✅ License activated successfully!");
-          } else {
+            console.log('✅ License activated successfully!');
+        } else {
             // Specific error messages based on response
-            let errorMsg = "Invalid license key. Please check and try again.";
-
+            let errorMsg = 'Invalid license key. Please check and try again.';
+            
             if (data.message) {
-              errorMsg = data.message;
+                errorMsg = data.message;
             } else if (response.status === 404) {
-              errorMsg =
-                "License key not found. Please check your Gumroad purchase email.";
+                errorMsg = 'License key not found. Please check your Gumroad purchase email.';
             } else if (response.status === 429) {
-              errorMsg =
-                "Too many attempts. Please try again in a few minutes.";
+                errorMsg = 'Too many attempts. Please try again in a few minutes.';
             } else if (response.status === 500) {
-              errorMsg = "Server error. Please try again later.";
+                errorMsg = 'Server error. Please try again later.';
             }
-
+            
             licenseError.textContent = errorMsg;
-            licenseError.classList.add("visible");
-          }
-        } catch (error) {
-          console.error("License activation error:", error);
-
-          // Specific error messages based on error type
-          let errorMsg =
-            "Connection failed. Please check that the backend server is running on http://localhost:8000";
+            licenseError.classList.add('visible');
+        }
+    } catch (error) {
+        console.error('License activation error:', error);
+        
+        // Specific error messages based on error type
+        let errorMsg = 'Connection failed. Please check your internet connection.';
 
           if (error.name === "TypeError" && error.message.includes("fetch")) {
             errorMsg =
