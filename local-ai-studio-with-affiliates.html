@@ -3,24 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local AI Studio - 11 Premium Open Source Models</title>
+    <title>Local AI Studio - 9 Premium Open Source Models</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary: #0066CC;
-            --cyan: #00D9FF;
-            --purple: #7C3AED;
+            /* Premium Core Colors */
+            --primary: #6366F1;                       /* Changed from #0066CC - Indigo */
+            --cyan: #06B6D4;                          /* Changed from #00D9FF - Softer cyan */
+            --purple: #A78BFA;                        /* Softer purple */
+            --accent-gold: #FBBF24;                   /* NEW - Premium exclusive color */
+
+            /* Keep existing */
             --green: #10B981;
             --bg: #0A0E27;
             --bg-secondary: #111C44;
             --text: #F5F7FF;
             --text-secondary: #A0AEC0;
             --border: #2D3A6F;
-            --glass-bg: rgba(17, 28, 68, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-hover: rgba(255, 255, 255, 0.05);
+
+            /* Glass Effects - Refined */
+            --glass-bg: rgba(17, 28, 68, 0.5);           /* More opaque for elegance */
+            --glass-border: rgba(255, 255, 255, 0.12);   /* Thicker for premium feel */
+            --glass-hover: rgba(255, 255, 255, 0.08);
+
+            /* Easing Functions */
+            --ease-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
@@ -120,6 +130,51 @@
         .model-selector label {
             font-size: 0.875rem;
             color: var(--text-secondary);
+        }
+
+        /* Connection Status Indicator */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px var(--green);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        .status-dot.disconnected {
+            background: #EF4444;
+            box-shadow: 0 0 12px #EF4444;
+            animation: none;
+        }
+
+        .status-dot.connecting {
+            background: #F59E0B;
+            box-shadow: 0 0 12px #F59E0B;
+            animation: pulse-dot 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
         }
 
         /* Custom Dropdown Styles */
@@ -561,14 +616,14 @@
             background: linear-gradient(135deg, var(--primary), var(--cyan));
             border: none;
             border-radius: 16px;
-            padding: 1.125rem 2.5rem;
+            padding: 1.25rem 3.5rem;              /* Increased */
             color: white;
-            font-weight: 700;
-            font-size: 1rem;
+            font-weight: 800;                     /* Increased from 700 */
+            font-size: 1.125rem;                  /* Increased from 1rem */
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s var(--ease-smooth);
             white-space: nowrap;
-            box-shadow: 0 4px 20px rgba(0, 102, 204, 0.4);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4); /* Deeper shadow */
             position: relative;
             overflow: hidden;
         }
@@ -581,7 +636,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
+            transition: left 0.6s var(--ease-smooth);
         }
 
         #sendButton:hover::before {
@@ -589,12 +644,13 @@
         }
 
         #sendButton:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 32px rgba(0, 217, 255, 0.5);
+            transform: translateY(-4px) scale(1.05);       /* More dramatic */
+            box-shadow: 0 20px 60px rgba(6, 182, 212, 0.5),
+                        0 0 30px rgba(6, 182, 212, 0.3);
         }
 
         #sendButton:active {
-            transform: translateY(-1px);
+            transform: translateY(-2px) scale(1.02);
         }
 
         #sendButton:disabled {
@@ -639,21 +695,26 @@
         }
 
         .welcome h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--text), var(--cyan));
+            font-size: 3.5rem;                    /* Increased from 2.5rem */
+            font-weight: 900;                     /* Increased from 800 */
+            background: linear-gradient(135deg, #F5F7FF 0%, var(--cyan) 50%, var(--purple) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;              /* NEW */
+            text-shadow: 0 2px 40px rgba(6, 182, 212, 0.2); /* NEW */
         }
 
         .welcome p {
-            font-size: 1.125rem;
+            font-size: 1.25rem;                   /* Increased from 1.125rem */
             color: var(--text-secondary);
             margin-bottom: 2rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            font-weight: 500;                     /* NEW */
+            letter-spacing: -0.01em;              /* NEW */
+            line-height: 1.7;                     /* NEW */
         }
 
         .feature-grid {
@@ -665,32 +726,55 @@
         }
 
         .feature-card {
-            background: rgba(17, 28, 68, 0.4);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, rgba(17, 28, 68, 0.5) 0%, rgba(6, 182, 212, 0.05) 100%);
+            backdrop-filter: blur(20px) saturate(200%);
+            -webkit-backdrop-filter: blur(20px) saturate(200%);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s var(--ease-smooth);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(167, 139, 250, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s var(--ease-standard);
+            pointer-events: none;
         }
 
         .feature-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            border-color: rgba(0, 217, 255, 0.4);
-            box-shadow: 0 12px 32px rgba(0, 217, 255, 0.25);
-            background: rgba(17, 28, 68, 0.5);
+            transform: translateY(-8px) scale(1.03);
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 20px 60px rgba(6, 182, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(17, 28, 68, 0.6) 0%, rgba(6, 182, 212, 0.1) 100%);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
         }
 
         .feature-card h3 {
-            font-size: 1.125rem;
+            font-size: 1.375rem;
+            font-weight: 700;
             color: var(--cyan);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .feature-card p {
             font-size: 0.875rem;
             color: var(--text-secondary);
+            line-height: 1.7;
         }
 
         /* Models Section */
@@ -730,38 +814,41 @@
         }
 
         .model-card {
-            background: linear-gradient(135deg, rgba(17, 28, 68, 0.5), rgba(124, 58, 237, 0.1));
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 2rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, rgba(17, 28, 68, 0.5) 0%, rgba(99, 102, 241, 0.08) 50%, rgba(6, 182, 212, 0.05) 100%);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1.5px solid rgba(6, 182, 212, 0.25);
+            border-radius: 28px;
+            padding: 2.5rem;
+            transition: all 0.4s var(--ease-smooth);
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
+            gap: 1.5rem;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
         .model-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
+            inset: 0;
+            border-radius: 28px;
+            padding: 1.5px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.5), rgba(167, 139, 250, 0.3), rgba(251, 191, 36, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.4s var(--ease-smooth);
+            pointer-events: none;
         }
 
         .model-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: rgba(0, 217, 255, 0.5);
-            box-shadow: 0 0 60px rgba(0, 217, 255, 0.3), 0 30px 80px rgba(124, 58, 237, 0.2);
-            background: linear-gradient(135deg, rgba(17, 28, 68, 0.6), rgba(0, 217, 255, 0.15));
+            transform: translateY(-12px) scale(1.03);
+            border-color: rgba(6, 182, 212, 0.6);
+            box-shadow: 0 0 60px rgba(6, 182, 212, 0.4), 0 30px 80px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, rgba(17, 28, 68, 0.6) 0%, rgba(99, 102, 241, 0.12) 50%, rgba(6, 182, 212, 0.1) 100%);
         }
 
         .model-card:hover::before {
@@ -780,8 +867,8 @@
         }
 
         .model-name {
-            font-size: 1.375rem;
-            font-weight: 800;
+            font-size: 1.625rem;
+            font-weight: 900;
             color: var(--text);
             margin-bottom: 0.375rem;
             letter-spacing: -0.02em;
@@ -790,32 +877,34 @@
         .model-size {
             font-size: 0.875rem;
             color: var(--text-secondary);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .model-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 14px;
+            font-size: 0.8125rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
             white-space: nowrap;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s var(--ease-smooth);
+            width: fit-content;
         }
 
         .model-badge.installed {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
-            border: 1px solid rgba(16, 185, 129, 0.5);
-            color: var(--green);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.12));
+            border: 1.5px solid rgba(16, 185, 129, 0.6);
+            color: #6EE7B7;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
         }
 
         .model-badge.not-installed {
-            background: rgba(160, 174, 192, 0.12);
-            border: 1px solid rgba(160, 174, 192, 0.3);
+            background: linear-gradient(135deg, rgba(160, 174, 192, 0.15), rgba(160, 174, 192, 0.08));
+            border: 1.5px solid rgba(160, 174, 192, 0.4);
             color: var(--text-secondary);
         }
 
@@ -839,22 +928,22 @@
         }
 
         .model-use-case {
-            padding: 0.375rem 0.875rem;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.12), rgba(0, 217, 255, 0.08));
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            border-radius: 16px;
+            padding: 0.5rem 1.125rem;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.08));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            border-radius: 20px;
             font-size: 0.8125rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--cyan);
-            box-shadow: 0 2px 6px rgba(0, 217, 255, 0.15);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(6, 182, 212, 0.1);
+            transition: all 0.2s var(--ease-standard);
         }
 
         .model-use-case:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.25);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(6, 182, 212, 0.15));
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
         }
 
         .model-actions {
@@ -1112,10 +1201,417 @@
             box-shadow: 0 10px 30px rgba(0, 217, 255, 0.5);
         }
 
+        /* PRO Overlay & Badge */
+        .pro-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 39, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .model-card.pro-locked {
+            position: relative;
+        }
+
+        .model-card.pro-locked .pro-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .model-card.pro-locked:hover .pro-overlay {
+            background: rgba(10, 14, 39, 0.95);
+        }
+
+        .pro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            border: 2px solid #FBBF24;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 800;
+            color: #FEF3C7;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 8px 24px rgba(251, 191, 36, 0.4);
+            animation: pulse-gold 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% {
+                box-shadow: 0 8px 24px rgba(251, 191, 36, 0.4);
+            }
+            50% {
+                box-shadow: 0 12px 36px rgba(251, 191, 36, 0.6);
+            }
+        }
+
+        .pro-unlock-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .pro-unlock-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border: none;
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .pro-unlock-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.6);
+        }
+
+        /* License Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(17, 28, 68, 0.95), rgba(124, 58, 237, 0.2));
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .pricing-card {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--green);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            color: var(--text);
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--green);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            padding: 1.125rem 2rem;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(16, 185, 129, 0.6);
+        }
+
+        .modal-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--text);
+        }
+
+        .modal-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .license-form {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .license-form h3 {
+            font-size: 1.25rem;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .license-form input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .license-form input:focus {
+            outline: none;
+            border-color: var(--cyan);
+            background: rgba(0, 217, 255, 0.05);
+            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.1);
+        }
+
+        .license-form input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .license-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: #FCA5A5;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .license-error.visible {
+            display: block;
+        }
+
+        .license-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--green);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .license-success.visible {
+            display: block;
+        }
+
+        /* Upgrade Bar */
+        #upgradeBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(17, 28, 68, 0.98), rgba(124, 58, 237, 0.3));
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-top: 2px solid rgba(251, 191, 36, 0.4);
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            z-index: 9999;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #upgradeBar.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .upgrade-bar-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .upgrade-bar-icon {
+            font-size: 2rem;
+            animation: pulse-gold 2s ease-in-out infinite;
+        }
+
+        .upgrade-bar-text h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .upgrade-bar-text p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .upgrade-bar-btn {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border: none;
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .upgrade-bar-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 36px rgba(16, 185, 129, 0.6);
+        }
+
+        .upgrade-bar-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upgrade-bar-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text);
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .affiliate-sidebar {
                 display: none;
+            }
+
+            #upgradeBar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .upgrade-bar-content {
+                flex-direction: column;
+                text-align: center;
             }
         }
 
@@ -1126,6 +1622,102 @@
 
             .progress-content {
                 padding: 2rem;
+            }
+
+            .modal-content {
+                padding: 2rem;
+            }
+        }
+
+        /* Premium Design - Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .welcome h2 {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .welcome p {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            #sendButton {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .model-card {
+                padding: 1.5rem;
+                border-radius: 24px;
+                gap: 1.25rem;
+            }
+
+            .model-name {
+                font-size: 1.25rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+                border-radius: 18px;
+            }
+
+            .feature-card h3 {
+                font-size: 1.125rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .models-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome h2 {
+                font-size: 1.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .welcome p {
+                font-size: 0.9375rem;
+                line-height: 1.6;
+            }
+
+            #sendButton {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.9375rem;
+            }
+
+            .model-card {
+                padding: 1.25rem;
+                border-radius: 20px;
+                gap: 1rem;
+            }
+
+            .model-name {
+                font-size: 1.125rem;
+            }
+
+            .model-badge {
+                padding: 0.5rem 1rem;
+                font-size: 0.75rem;
+            }
+
+            .feature-card {
+                padding: 1.25rem;
+                border-radius: 16px;
+            }
+
+            .feature-card h3 {
+                font-size: 1rem;
+            }
+
+            .models-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .models-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
         }
     </style>
@@ -1202,8 +1794,8 @@
             <div class="messages" id="messages">
                 <div class="models-section">
                     <div class="models-header">
-                        <h2>11 Premium Open Source Models</h2>
-                        <p>Start chatting instantly with TinyLlama, or install more powerful models with one click</p>
+                        <h2>9 Premium Open Source Models</h2>
+                        <p>3 free models to start with, plus 6 pro models with license</p>
                     </div>
 
                     <div class="models-grid">
@@ -1218,6 +1810,9 @@
                             </div>
                             <div class="model-description">
                                 Your instant-start AI companion. Lightweight and fast, perfect for quick conversations and getting started immediately.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10B981; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~2GB RAM</strong> • Runs on any modern computer
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Instant Start</span>
@@ -1240,6 +1835,9 @@
                             </div>
                             <div class="model-description">
                                 Meta's latest model with excellent balance of speed and intelligence. Great for everyday conversations and creative tasks.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(251, 191, 36, 0.1); border-left: 3px solid #F59E0B; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~4-6GB RAM</strong> • Best with 8GB+ system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Conversations</span>
@@ -1263,6 +1861,9 @@
                             </div>
                             <div class="model-description">
                                 Powerful and versatile model with excellent reasoning capabilities. Perfect balance between performance and resource usage.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #EF4444; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~8-10GB RAM</strong> • Recommended: 16GB system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Complex Tasks</span>
@@ -1286,6 +1887,9 @@
                             </div>
                             <div class="model-description">
                                 Specialized for code generation, debugging, and explanations. Supports all major programming languages with expert-level knowledge.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #EF4444; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~8GB RAM</strong> • Best with 12GB+ system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Code Generation</span>
@@ -1309,6 +1913,9 @@
                             </div>
                             <div class="model-description">
                                 Excellent at following complex instructions and creative writing. Known for its nuanced understanding and expressive outputs.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #EF4444; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~8GB RAM</strong> • Best with 12GB+ system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Creative Writing</span>
@@ -1332,6 +1939,9 @@
                             </div>
                             <div class="model-description">
                                 Microsoft's larger Phi model with enhanced capabilities. Exceptional performance on reasoning and mathematical tasks.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #EF4444; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~10-12GB RAM</strong> • Recommended: 16GB system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Mathematics</span>
@@ -1355,6 +1965,9 @@
                             </div>
                             <div class="model-description">
                                 Google's ultra-efficient model. Lightning-fast responses without sacrificing quality. Perfect for real-time applications.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10B981; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~3-4GB RAM</strong> • Works great on 8GB systems
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Speed</span>
@@ -1378,6 +1991,9 @@
                             </div>
                             <div class="model-description">
                                 Google's larger Gemma variant with superior performance. Excellent for complex reasoning and multi-step problem solving.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #EF4444; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~9-11GB RAM</strong> • Recommended: 16GB system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Advanced Tasks</span>
@@ -1401,6 +2017,9 @@
                             </div>
                             <div class="model-description">
                                 Microsoft's long-context specialist with 128K token window. Analyze entire books or extensive codebases in one go.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(251, 191, 36, 0.1); border-left: 3px solid #F59E0B; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~4-6GB RAM</strong> • Best with 8GB+ system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Long Documents</span>
@@ -1424,6 +2043,9 @@
                             </div>
                             <div class="model-description">
                                 Alibaba's coding powerhouse. Exceptional at programming tasks, technical documentation, and system design.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #EF4444; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~8GB RAM</strong> • Best with 12GB+ system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Coding</span>
@@ -1447,6 +2069,9 @@
                             </div>
                             <div class="model-description">
                                 Specialized coding model trained on 2 trillion tokens of code. Exceptional at code completion and generation.
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(251, 191, 36, 0.1); border-left: 3px solid #F59E0B; border-radius: 4px; font-size: 0.75rem;">
+                                    <strong>💻 Requires: ~6-8GB RAM</strong> • Best with 12GB+ system RAM
+                                </div>
                             </div>
                             <div class="model-use-cases">
                                 <span class="model-use-case">Autocomplete</span>
@@ -1554,6 +2179,59 @@
         </div>
     </div>
 
+    <!-- License/Upgrade Modal -->
+    <div class="modal" id="upgradeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Unlock All 11 Models</h2>
+                <p>Get instant access to 8 additional pro models including Mistral, Qwen, DeepSeek, and more!</p>
+            </div>
+
+            <div class="pricing-card">
+                <div class="pricing-price">$5</div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">One-time payment. Lifetime access.</p>
+                <ul class="pricing-features">
+                    <li>All 11 AI models (3 free + 8 pro)</li>
+                    <li>Llama 3.1 8B for complex reasoning</li>
+                    <li>CodeLlama 7B for programming</li>
+                    <li>Mistral 7B for creative writing</li>
+                    <li>Phi-3 Medium for mathematics</li>
+                    <li>Gemma 2 9B for advanced tasks</li>
+                    <li>Qwen 2.5 for coding excellence</li>
+                    <li>Deepseek Coder for code completion</li>
+                    <li>100% local - no subscriptions</li>
+                </ul>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn primary" onclick="openGumroad()">Get Pro Access for $5</button>
+            </div>
+
+            <div class="license-form">
+                <h3>Already purchased? Enter your license key</h3>
+                <input type="text" id="licenseKeyInput" placeholder="Enter your Gumroad license key...">
+                <button class="modal-btn secondary" onclick="activateLicense()">Activate License</button>
+                <div class="license-error" id="licenseError">Invalid license key. Please check and try again.</div>
+                <div class="license-success" id="licenseSuccess">License activated successfully! Enjoy all premium models.</div>
+            </div>
+
+            <button class="modal-btn secondary" onclick="closeUpgradeModal()" style="margin-top: 1.5rem;">Maybe Later</button>
+        </div>
+    </div>
+
+    <!-- Upgrade Bar (shown for free users) -->
+    <div id="upgradeBar">
+        <div class="upgrade-bar-content">
+            <div class="upgrade-bar-icon">🔒</div>
+            <div class="upgrade-bar-text">
+                <h4>Unlock 8 More Premium Models</h4>
+                <p>Get lifetime access to Llama 3.1 8B, CodeLlama, Mistral, and more for just $5</p>
+            </div>
+        </div>
+        <button class="upgrade-bar-btn" onclick="showUpgradeModal()">Upgrade to Pro</button>
+        <button class="upgrade-bar-close" onclick="closeUpgradeBar()">×</button>
+    </div>
+
     <script>
         const messagesContainer = document.getElementById('messages');
         const messageInput = document.getElementById('messageInput');
@@ -1565,6 +2243,240 @@
         let isWelcomeVisible = true;
         let installedModels = ['tinyllama:latest'];
         let currentInstallations = new Map(); // Track ongoing installations
+
+        // License Management
+        let currentTier = 'free'; // 'free' or 'pro'
+        const GUMROAD_PRODUCT_URL = 'https://wmeldman.gumroad.com/l/udody'; // Actual Gumroad product page
+
+        // Free tier models (3 models)
+        const FREE_MODELS = ['tinyllama:latest', 'llama3.2:3b', 'gemma2:2b'];
+
+        // Pro tier models (11 models total: 3 free + 8 additional)
+        const PRO_MODELS = [
+            'tinyllama:latest',
+            'llama3.2:3b',
+            'gemma2:2b',
+            'llama3.1:8b',
+            'codellama:7b',
+            'mistral:7b-instruct',
+            'phi3:medium',
+            'gemma2:9b',
+            'phi3.5:mini',
+            'qwen2.5:7b',
+            'deepseek-coder:6.7b'
+        ];
+
+        // Check license on page load
+        async function checkLicense() {
+            const savedKey = localStorage.getItem('licenseKey');
+            if (savedKey) {
+                console.log('Found saved license key, validating...');
+                try {
+                    const response = await fetch('/api/license/check');
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.tier === 'pro') {
+                            currentTier = 'pro';
+                            setProTier();
+                            console.log('✅ Pro tier activated');
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.log('License check failed, defaulting to free tier');
+                }
+            }
+
+            // Default to free tier
+            currentTier = 'free';
+            setFreeTier();
+            console.log('📦 Free tier active (3 models)');
+        }
+
+        // Show upgrade modal
+        function showUpgradeModal() {
+            const modal = document.getElementById('upgradeModal');
+            modal.classList.add('active');
+        }
+
+        // Close upgrade modal
+        function closeUpgradeModal() {
+            const modal = document.getElementById('upgradeModal');
+            modal.classList.remove('active');
+        }
+
+        // Open Gumroad purchase page
+        function openGumroad() {
+            window.open(GUMROAD_PRODUCT_URL, '_blank');
+        }
+
+        // Activate license key
+        // Improved License Activation Function with Loading States and Better Error Handling
+async function activateLicense() {
+    const licenseKeyInput = document.getElementById('licenseKeyInput');
+    const licenseError = document.getElementById('licenseError');
+    const licenseSuccess = document.getElementById('licenseSuccess');
+    const activateBtn = document.querySelector('.license-form .modal-btn.secondary');
+    const licenseKey = licenseKeyInput.value.trim();
+
+    // Hide previous messages
+    licenseError.classList.remove('visible');
+    licenseSuccess.classList.remove('visible');
+
+    if (!licenseKey) {
+        licenseError.textContent = 'Please enter a license key.';
+        licenseError.classList.add('visible');
+        return;
+    }
+
+    // Show loading state
+    const originalBtnText = activateBtn.textContent;
+    activateBtn.textContent = 'Validating...';
+    activateBtn.disabled = true;
+    activateBtn.style.opacity = '0.6';
+    activateBtn.style.cursor = 'wait';
+
+    try {
+        // Use proper backend URL
+        const response = await fetch('http://localhost:8000/api/license/validate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ license_key: licenseKey })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.valid) {
+            // Save license key
+            localStorage.setItem('licenseKey', licenseKey);
+
+            // Update tier
+            currentTier = 'pro';
+            setProTier();
+
+            // Show success message
+            licenseSuccess.textContent = '✅ Pro Activated! All 9 models unlocked.';
+            licenseSuccess.classList.add('visible');
+            licenseKeyInput.value = '';
+
+            // Close modal after 2 seconds
+            setTimeout(() => {
+                closeUpgradeModal();
+                licenseSuccess.classList.remove('visible');
+            }, 2000);
+
+            console.log('✅ License activated successfully!');
+        } else {
+            // Specific error messages based on response
+            let errorMsg = 'Invalid license key. Please check and try again.';
+            
+            if (data.message) {
+                errorMsg = data.message;
+            } else if (response.status === 404) {
+                errorMsg = 'License key not found. Please check your Gumroad purchase email.';
+            } else if (response.status === 429) {
+                errorMsg = 'Too many attempts. Please try again in a few minutes.';
+            } else if (response.status === 500) {
+                errorMsg = 'Server error. Please try again later.';
+            }
+            
+            licenseError.textContent = errorMsg;
+            licenseError.classList.add('visible');
+        }
+    } catch (error) {
+        console.error('License activation error:', error);
+        
+        // Specific error messages based on error type
+        let errorMsg = 'Connection failed. Please check that the backend server is running on http://localhost:8000';
+        
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            errorMsg = '❌ Backend not running. Start server with: python app.py';
+        } else if (error.name === 'SyntaxError') {
+            errorMsg = '❌ Invalid response from server. Please check backend logs.';
+        }
+        
+        licenseError.textContent = errorMsg;
+        licenseError.classList.add('visible');
+    } finally {
+        // Reset button state
+        activateBtn.textContent = originalBtnText;
+        activateBtn.disabled = false;
+        activateBtn.style.opacity = '1';
+        activateBtn.style.cursor = 'pointer';
+    }
+}
+
+        // Set free tier restrictions
+        function setFreeTier() {
+            const upgradeBar = document.getElementById('upgradeBar');
+            upgradeBar.classList.add('visible');
+
+            // Lock all models except free ones
+            document.querySelectorAll('.model-card').forEach(card => {
+                const modelId = card.dataset.modelId;
+
+                if (!FREE_MODELS.includes(modelId)) {
+                    // Add pro-locked class
+                    card.classList.add('pro-locked');
+
+                    // Create overlay if it doesn't exist
+                    if (!card.querySelector('.pro-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'pro-overlay';
+                        overlay.innerHTML = `
+                            <div class="pro-badge">🔒 PRO</div>
+                            <div class="pro-unlock-text">Unlock this model with Pro Access</div>
+                            <button class="pro-unlock-btn" onclick="showUpgradeModal()">Unlock for $5</button>
+                        `;
+                        card.appendChild(overlay);
+                    }
+                }
+            });
+
+            console.log('🔒 Free tier: 3 models available');
+        }
+
+        // Set pro tier (unlock all models)
+        function setProTier() {
+            const upgradeBar = document.getElementById('upgradeBar');
+            upgradeBar.classList.remove('visible');
+
+            // Unlock all models
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.classList.remove('pro-locked');
+
+                // Remove overlay
+                const overlay = card.querySelector('.pro-overlay');
+                if (overlay) {
+                    overlay.remove();
+                }
+            });
+
+            console.log('🎉 Pro tier: All 9 models unlocked (3 free + 6 pro)!');
+        }
+
+        // Close upgrade bar
+        function closeUpgradeBar() {
+            const upgradeBar = document.getElementById('upgradeBar');
+            upgradeBar.classList.remove('visible');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('upgradeModal');
+            if (e.target === modal) {
+                closeUpgradeModal();
+            }
+        });
+
+        // Handle Enter key in license input
+        document.getElementById('licenseKeyInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                activateLicense();
+            }
+        });
 
         // Initialize dropdown with models
         function updateDropdown() {
@@ -1583,16 +2495,14 @@
             // Add installed models to dropdown
             const modelInfo = {
                 'tinyllama:latest': 'TinyLlama 1.1B - FREE',
-                'llama3.2:3b': 'Llama 3.2 3B',
-                'llama3.1:8b': 'Llama 3.1 8B',
-                'codellama:7b': 'CodeLlama 7B',
-                'mistral:7b-instruct': 'Mistral 7B Instruct',
-                'phi3:medium': 'Phi-3 Medium',
-                'gemma2:2b': 'Gemma 2 2B',
-                'gemma2:9b': 'Gemma 2 9B',
-                'phi3.5:mini': 'Phi-3.5 Mini',
-                'qwen2.5:7b': 'Qwen 2.5 7B',
-                'deepseek-coder:6.7b': 'Deepseek Coder 6.7B'
+                'llama3.2:3b': 'Llama 3.2 3B - FREE',
+                'gemma2:2b': 'Gemma 2 2B - FREE',
+                'phi3.5:mini': 'Phi-3.5 Mini - PRO',
+                'qwen2.5:7b': 'Qwen 2.5 7B - PRO',
+                'mistral:7b-instruct-v0.3': 'Mistral 7B Instruct v0.3 - PRO',
+                'llama3.3:70b': 'Llama 3.3 70B - PRO',
+                'qwen2.5:72b': 'Qwen 2.5 72B - PRO',
+                'deepseek:v3': 'DeepSeek v3 - PRO'
             };
 
             installedModels.forEach(modelId => {
@@ -1724,7 +2634,7 @@
             progressClose.classList.add('visible');
         }
 
-        // Install Model Function
+        // Install Model Function with Real SSE Streaming
         async function installModel(modelName) {
             const card = document.querySelector(`[data-model-id="${modelName}"]`);
             if (!card) return;
@@ -1754,78 +2664,26 @@
             showProgressModal(modelDisplayName);
 
             try {
-                // Backend endpoints needed (add comments for backend implementation):
-                // POST /api/models/install - Start model download with {model: modelName}
-                // GET /api/models/status/{model} - Get download progress (returns {progress: 0-100, status: string, installed: boolean})
+                // Use EventSource for Server-Sent Events (SSE) streaming
+                const eventSource = new EventSource(`/api/models/install?model=${encodeURIComponent(modelName)}`);
 
-                // Start installation
-                const installResponse = await fetch('/api/models/install', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ model: modelName })
-                });
+                console.log(`[INSTALL] Started EventSource for ${modelName}`);
 
-                if (!installResponse.ok) {
-                    throw new Error('Failed to start installation');
-                }
-
-                // Simulate progress for demo (replace with real polling)
-                let progress = 0;
-                const progressInterval = setInterval(async () => {
-                    progress += Math.random() * 15;
-                    if (progress > 95) progress = 95;
-
-                    const statuses = [
-                        'Downloading model files...',
-                        'Extracting layers...',
-                        'Verifying checksums...',
-                        'Setting up model...',
-                        'Optimizing for your hardware...'
-                    ];
-                    const statusIndex = Math.min(Math.floor(progress / 20), statuses.length - 1);
-
-                    updateProgress(Math.round(progress), statuses[statusIndex]);
-
-                    // Check actual status (when backend is ready)
+                eventSource.onmessage = function(event) {
                     try {
-                        const statusResponse = await fetch(`/api/models/status/${modelName}`);
-                        if (statusResponse.ok) {
-                            const statusData = await statusResponse.json();
-                            if (statusData.installed) {
-                                clearInterval(progressInterval);
+                        const data = JSON.parse(event.data);
+                        console.log('[INSTALL] Progress:', data);
 
-                                // Installation complete
-                                updateProgress(100, 'Installation complete!');
-                                completeProgress(true);
+                        // Handle different status types from Ollama
+                        if (data.status === 'error') {
+                            console.error('[INSTALL] Error:', data.error);
+                            eventSource.close();
+                            throw new Error(data.error || 'Installation failed');
+                        } else if (data.status === 'success') {
+                            // Installation complete
+                            console.log('[INSTALL] Success!');
+                            eventSource.close();
 
-                                // Update UI
-                                badge.textContent = '✓ INSTALLED';
-                                badge.classList.remove('installing', 'not-installed');
-                                badge.classList.add('installed');
-                                installBtn.textContent = 'Installed';
-                                installBtn.style.opacity = '0.5';
-                                chatBtn.disabled = false;
-
-                                // Add to installed models list
-                                if (!installedModels.includes(modelName)) {
-                                    installedModels.push(modelName);
-                                    updateDropdown();
-                                }
-
-                                // Remove from current installations
-                                currentInstallations.delete(modelName);
-                            }
-                        }
-                    } catch (err) {
-                        // Backend not ready, continue with simulation
-                    }
-
-                    // Simulate completion for demo
-                    if (progress >= 95) {
-                        clearInterval(progressInterval);
-                        setTimeout(() => {
                             updateProgress(100, 'Installation complete!');
                             completeProgress(true);
 
@@ -1845,9 +2703,51 @@
 
                             // Remove from current installations
                             currentInstallations.delete(modelName);
-                        }, 1000);
+                        } else {
+                            // Progress update from Ollama
+                            let percentage = 0;
+                            let statusText = data.status || 'Downloading...';
+
+                            // Calculate progress percentage
+                            if (data.total && data.completed) {
+                                percentage = Math.round((data.completed / data.total) * 100);
+                            } else if (data.status === 'pulling manifest') {
+                                percentage = 5;
+                                statusText = 'Pulling manifest...';
+                            } else if (data.status === 'downloading digestname') {
+                                percentage = 10;
+                                statusText = 'Starting download...';
+                            } else if (data.status === 'verifying sha256 digest') {
+                                percentage = 95;
+                                statusText = 'Verifying download...';
+                            } else if (data.status === 'writing manifest') {
+                                percentage = 98;
+                                statusText = 'Writing manifest...';
+                            }
+
+                            updateProgress(percentage, statusText);
+                        }
+                    } catch (err) {
+                        console.error('[INSTALL] Parse error:', err);
                     }
-                }, 1000);
+                };
+
+                eventSource.onerror = function(err) {
+                    console.error('[INSTALL] EventSource error:', err);
+                    eventSource.close();
+
+                    completeProgress(false);
+
+                    // Reset UI
+                    badge.textContent = 'Not Installed';
+                    badge.classList.remove('installing', 'installed');
+                    badge.classList.add('not-installed');
+                    installBtn.disabled = false;
+                    installBtn.textContent = 'Install Now';
+
+                    // Remove from current installations
+                    currentInstallations.delete(modelName);
+                };
 
             } catch (error) {
                 console.error('Installation error:', error);
@@ -1990,17 +2890,34 @@
             if (message) message.remove();
         }
 
-        // Check backend health on load
+        // Check backend health and update connection status
         async function checkBackend() {
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.getElementById('statusText');
+
+            // Set connecting state
+            statusDot.className = 'status-dot connecting';
+
             try {
-                const response = await fetch('/api/health');
+                const response = await fetch('/api/health', { timeout: 3000 });
                 if (response.ok) {
                     console.log('✅ Backend connected and healthy');
+                    statusDot.className = 'status-dot';
+                    statusText.textContent = '100% Local';
+                    return true;
                 }
             } catch (error) {
                 console.log('⚠️ Backend check failed:', error.message);
             }
+
+            // Failed to connect
+            statusDot.className = 'status-dot disconnected';
+            statusText.textContent = 'Disconnected';
+            return false;
         }
+
+        // Periodically check connection status
+        setInterval(checkBackend, 10000); // Check every 10 seconds
 
         // Load installed models dynamically
         async function loadInstalledModels() {
@@ -2085,6 +3002,7 @@
         updateDropdown();
         checkBackend();
         loadInstalledModels();
+        checkLicense(); // Check license and apply tier restrictions
         messageInput.focus();
     </script>
 </body>

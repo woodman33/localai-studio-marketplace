@@ -48,6 +48,7 @@ services:
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-whsec_PLACEHOLDER}
       - SKIP_PAYMENT=${SKIP_PAYMENT:-false}
       - FRONTEND_URL=${FRONTEND_URL:-https://localai.studio}
+      - DEMO_MODE=${DEMO_MODE:-true}  # Disable model installation on public demo
       # Production optimizations
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1

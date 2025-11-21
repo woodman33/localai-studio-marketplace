@@ -4,10 +4,12 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: localai-ollama
+    entrypoint: ["/bin/bash", "/scripts/ollama-entrypoint.sh"]
     ports:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
+      - ./ollama-entrypoint.sh:/scripts/ollama-entrypoint.sh:ro
     networks:
       - localai-network
     restart: unless-stopped

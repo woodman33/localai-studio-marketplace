@@ -1,5 +1,8 @@
 # Environment variables (contains secrets)
 .env
+.env.vps
+.env.local
+.env.production
 
 # Python
 __pycache__/
