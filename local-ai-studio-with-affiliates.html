@@ -2883,6 +2883,83 @@
       // Show upgrade modal
       function showUpgradeModal() {
         const modal = document.getElementById("upgradeModal");
+        const modalTitle = modal.querySelector(".modal-title");
+        const modalBody = modal.querySelector(".modal-body");
+        
+        // Reset modal content first
+        modal.classList.remove("manage-mode");
+
+        if (currentTier === 'pro') {
+            // MANAGE MODE
+            modal.classList.add("manage-mode");
+            modalTitle.textContent = "Manage License";
+            
+            // Get saved key safely
+            const savedKey = localStorage.getItem('licenseKey') || 'Unknown';
+            const maskedKey = savedKey.length > 8 ? savedKey.substring(0, 4) + '...' + savedKey.substring(savedKey.length - 4) : '****';
+
+            modalBody.innerHTML = `
+                <div class="license-status-card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                    <h3 style="color: #10b981; margin-bottom: 0.5rem;">Pro Active</h3>
+                    <p style="color: #a1a1aa; margin-bottom: 0;">Your license is valid and active.</p>
+                    <div style="margin-top: 1rem; font-family: monospace; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 6px; display: inline-block;">
+                        Key: ${maskedKey}
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button onclick="deactivateLicense()" class="modal-btn secondary" style="width: 100%; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444;">
+                        Deactivate / Remove License
+                    </button>
+                    <button onclick="closeUpgradeModal()" class="modal-btn primary" style="width: 100%;">
+                        Close
+                    </button>
+                </div>
+            `;
+        } else {
+            // UPGRADE MODE (Default)
+            modalTitle.textContent = "Upgrade to Pro";
+            modalBody.innerHTML = `
+                <div class="pricing-header">
+                    <div class="price-large">$5 <span class="period">/ lifetime</span></div>
+                    <p class="price-subtitle">One-time payment. Own it forever.</p>
+                </div>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">🚀</span>
+                        <span class="feature-text">Unlock <strong>All 11 AI Models</strong></span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <span class="feature-text"><strong>Uncensored</strong> & Unrestricted Models</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔒</span>
+                        <span class="feature-text"><strong>100% Private</strong> - Runs Locally</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">💎</span>
+                        <span class="feature-text">Support Independent Development</span>
+                    </div>
+                </div>
+
+                <div class="license-form">
+                    <div class="input-group">
+                        <label>Already purchased? Enter License Key:</label>
+                        <input type="text" id="licenseKeyInput" placeholder="ABCD-1234-EFGH-5678" />
+                        <div id="licenseError" class="error-msg"></div>
+                        <div id="licenseSuccess" class="success-msg"></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button onclick="openGumroad()" class="modal-btn primary">Get Pro Access ($5)</button>
+                        <button onclick="activateLicense()" class="modal-btn secondary">Activate</button>
+                    </div>
+                </div>
+            `;
+        }
+
         modal.classList.add("active");
       }
 
@@ -3024,22 +3101,32 @@
         console.log("🔒 Free tier: 3 models available");
       }
 
-      // Set pro tier (unlock all models)
+      // Set Pro Tier UI
       function setProTier() {
-        const upgradeBar = document.getElementById("upgradeBar");
-        upgradeBar.classList.remove("visible");
+        // Update header badge
+        const badge = document.querySelector(".tier-badge");
+        badge.textContent = "PRO";
+        badge.classList.add("pro");
 
-        // Unlock all models
-        document.querySelectorAll(".model-card").forEach((card) => {
-          card.classList.remove("pro-locked");
+        // Update upgrade button to Manage License
+        const upgradeBtn = document.querySelector(".upgrade-btn");
+        upgradeBtn.textContent = "Manage License";
+        upgradeBtn.onclick = showUpgradeModal;
+        upgradeBtn.style.background = "rgba(255, 255, 255, 0.1)";
+        upgradeBtn.style.border = "1px solid rgba(255, 255, 255, 0.2)";
 
-          // Remove overlay
-          const overlay = card.querySelector(".pro-overlay");
-          if (overlay) {
-            overlay.remove();
-          }
+        // Enable all "Start Chat" buttons
+        document.querySelectorAll(".chat-btn").forEach((btn) => {
+          btn.disabled = false;
+          btn.textContent = "Start Chat";
         });
 
+        // Update model badges
+        document.querySelectorAll(".model-badge").forEach((badge) => {
+          if (badge.textContent === "Pro Only") {
+            badge.style.display = "none";
+          }
+        });
         console.log("🎉 Pro tier: All 9 models unlocked (3 free + 6 pro)!");
       }
 
