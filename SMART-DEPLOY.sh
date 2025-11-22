@@ -100,8 +100,7 @@ else
     echo "   ✅ Existing .env file found. Keeping your configuration."
 fi
 
-    echo "   ✅ Existing .env file found. Keeping your configuration."
-fi
+
 
 # Ensure .env ends with a newline
 if [ -f .env ] && [ -n "$(tail -c 1 .env)" ]; then
