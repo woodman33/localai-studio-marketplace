@@ -97,51 +97,6 @@ GUMROAD_PRODUCT_PERMALINK=udody
 ENV_EOF
 fi
 
-# Load variables for injection into docker-compose
-# Use Python for robust .env parsing (handles spaces, quotes, comments)
-echo "   Reading .env file..."
-if [ -f .env ]; then
-    echo "   .env file exists. Content preview:"
-    head -n 5 .env | sed 's/./& /g' # Print with spaces to see hidden chars
-else
-    echo "   ❌ .env file NOT found!"
-fi
-
-GUMROAD_KEY=$(python3 -c "
-import re
-import sys
-try:
-    with open('.env', 'r') as f:
-        content = f.read()
-        # Look for GUMROAD_API_KEY = value (ignoring spaces and quotes)
-        match = re.search(r'GUMROAD_API_KEY\s*=\s*[\"\']?([^\"\n\r\']+)[\"\']?', content)
-        if match: 
-            print(match.group(1).strip())
-        else:
-            sys.stderr.write('Python regex failed to match GUMROAD_API_KEY\n')
-except Exception as e: 
-    sys.stderr.write(f'Python error: {e}\n')
-")
-
-GUMROAD_PERMALINK=$(python3 -c "
-import re
-try:
-    with open('.env', 'r') as f:
-        content = f.read()
-        match = re.search(r'GUMROAD_PRODUCT_PERMALINK\s*=\s*[\"\']?([^\"\n\r\']+)[\"\']?', content)
-        if match: print(match.group(1).strip())
-        else: print('udody')
-except: print('udody')
-")
-
-echo "   Debug: Extracted Key Length: ${#GUMROAD_KEY}"
-if [ -z "$GUMROAD_KEY" ]; then
-    echo "❌ ERROR: GUMROAD_API_KEY extraction failed!"
-    echo "   Please ensure your .env file contains: GUMROAD_API_KEY=your_key_here"
-else
-    echo "   ✅ Found Gumroad API Key (starts with ${GUMROAD_KEY:0:4}...)"
-fi
-
 # Phase 5: Generate port-optimized configuration
 echo ""
 echo "📝 Phase 5: Generating port-optimized configuration..."
@@ -158,15 +113,16 @@ services:
     container_name: localai-marketplace-backend
     ports:
       - "127.0.0.1:${BACKEND_PORT}:8000"
+    env_file:
+      - .env
     environment:
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      # Defaults if not in .env (but env_file loads .env first)
       - STRIPE_SECRET_KEY=\${STRIPE_SECRET_KEY:-sk_test_PLACEHOLDER}
       - STRIPE_PUBLISHABLE_KEY=\${STRIPE_PUBLISHABLE_KEY:-pk_test_PLACEHOLDER}
       - STRIPE_WEBHOOK_SECRET=\${STRIPE_WEBHOOK_SECRET:-whsec_PLACEHOLDER}
       - SKIP_PAYMENT=\${SKIP_PAYMENT:-true}
       - FRONTEND_URL=\${FRONTEND_URL:-https://localai.studio}
-      - GUMROAD_API_KEY=${GUMROAD_KEY}
-      - GUMROAD_PRODUCT_PERMALINK=${GUMROAD_PERMALINK}
     volumes:
       - ./data/backend:/app/data
     restart: unless-stopped
