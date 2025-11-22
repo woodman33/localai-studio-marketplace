@@ -159,6 +159,11 @@ chmod 755 /root/localai-studio-marketplace/data/backend
 
 # Phase 7: Build & Deploy
 echo ""
+# Load environment variables from .env if present
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+fi
+
 echo "🏗️ Phase 7: Building Docker images..."
 
 docker compose -f docker-compose.smart.yml build --no-cache
