@@ -2963,12 +2963,7 @@
             
             if (data.message) {
                 errorMsg = data.message;
-            } else if (response.status === 404) {
-                errorMsg = 'License key not found. Please check your Gumroad purchase email.';
             } else if (response.status === 429) {
-                errorMsg = 'Too many attempts. Please try again in a few minutes.';
-            } else if (response.status === 500) {
-                errorMsg = 'Server error. Please try again later.';
             }
             
             licenseError.textContent = errorMsg;
