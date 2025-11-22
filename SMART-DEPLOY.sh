@@ -81,9 +81,33 @@ else
     cd localai-studio-marketplace
 fi
 
-# Phase 4: Create Custom Docker Compose
+# Phase 4: Create Environment File & Load Variables
 echo ""
-echo "📝 Phase 4: Generating port-optimized configuration..."
+echo "⚙️ Phase 4: Creating environment configuration..."
+
+# Only create if it doesn't exist to avoid overwriting user keys
+if [ ! -f .env ]; then
+    cat > .env << 'ENV_EOF'
+SKIP_PAYMENT=true
+STRIPE_SECRET_KEY=sk_test_PLACEHOLDER
+STRIPE_PUBLISHABLE_KEY=pk_test_PLACEHOLDER
+STRIPE_WEBHOOK_SECRET=whsec_PLACEHOLDER
+FRONTEND_URL=https://localai.studio
+GUMROAD_PRODUCT_PERMALINK=udody
+ENV_EOF
+fi
+
+# Load variables for injection into docker-compose
+# We use a simple grep to extract values since sourcing is proving unreliable in this context
+GUMROAD_KEY=$(grep "^GUMROAD_API_KEY=" .env | cut -d '=' -f2- | tr -d '"' | tr -d "'" || echo "")
+GUMROAD_PERMALINK=$(grep "^GUMROAD_PRODUCT_PERMALINK=" .env | cut -d '=' -f2- | tr -d '"' | tr -d "'" || echo "udody")
+
+echo "   Gumroad Key found: ${GUMROAD_KEY:0:5}..."
+echo "   Gumroad Permalink: $GUMROAD_PERMALINK"
+
+# Phase 5: Generate port-optimized configuration
+echo ""
+echo "📝 Phase 5: Generating port-optimized configuration..."
 
 cat > docker-compose.smart.yml << COMPOSE_EOF
 version: '3.8'
@@ -103,10 +127,9 @@ services:
       - STRIPE_PUBLISHABLE_KEY=\${STRIPE_PUBLISHABLE_KEY:-pk_test_PLACEHOLDER}
       - STRIPE_WEBHOOK_SECRET=\${STRIPE_WEBHOOK_SECRET:-whsec_PLACEHOLDER}
       - SKIP_PAYMENT=\${SKIP_PAYMENT:-true}
-      - SKIP_PAYMENT=\${SKIP_PAYMENT:-true}
       - FRONTEND_URL=\${FRONTEND_URL:-https://localai.studio}
-      - GUMROAD_API_KEY=\${GUMROAD_API_KEY}
-      - GUMROAD_PRODUCT_PERMALINK=\${GUMROAD_PRODUCT_PERMALINK:-udody}
+      - GUMROAD_API_KEY=${GUMROAD_KEY}
+      - GUMROAD_PRODUCT_PERMALINK=${GUMROAD_PERMALINK}
     volumes:
       - ./data/backend:/app/data
     restart: unless-stopped
@@ -137,7 +160,7 @@ services:
       retries: 3
 COMPOSE_EOF
 
-# Phase 5: Create Environment File
+# Phase 5: Create Environment File & Load Variables
 echo ""
 echo "⚙️ Phase 5: Creating environment configuration..."
 
@@ -148,6 +171,20 @@ STRIPE_PUBLISHABLE_KEY=pk_test_PLACEHOLDER
 STRIPE_WEBHOOK_SECRET=whsec_PLACEHOLDER
 FRONTEND_URL=https://localai.studio
 ENV_EOF
+
+# Load variables for injection into docker-compose
+# We use a simple grep to extract values since sourcing is proving unreliable in this context
+GUMROAD_KEY=$(grep "^GUMROAD_API_KEY=" .env | cut -d '=' -f2- || echo "")
+GUMROAD_PERMALINK=$(grep "^GUMROAD_PRODUCT_PERMALINK=" .env | cut -d '=' -f2- || echo "udody")
+
+# If empty, try to find it without quotes if user added it differently
+if [ -z "$GUMROAD_KEY" ]; then
+    echo "⚠️  Warning: GUMROAD_API_KEY not found in .env via grep. Checking if set in shell..."
+    GUMROAD_KEY="${GUMROAD_API_KEY}"
+fi
+
+echo "   Gumroad Key found: ${GUMROAD_KEY:0:5}..."
+echo "   Gumroad Permalink: $GUMROAD_PERMALINK"
 
 # Phase 6: Create Data Directories
 echo ""
