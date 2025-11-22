@@ -40,10 +40,11 @@ if STRIPE_SECRET_KEY and not STRIPE_SECRET_KEY.startswith("PLACEHOLDER"):
     stripe.api_key = STRIPE_SECRET_KEY
 
 # Gumroad configuration for instant monetization
-GUMROAD_API_KEY = os.getenv("GUMROAD_API_KEY", "").strip()
-GUMROAD_PRODUCT_PERMALINK = os.getenv("GUMROAD_PRODUCT_PERMALINK", "udody").strip()
+GUMROAD_API_KEY = os.getenv("GUMROAD_API_KEY", "").strip().strip('"').strip("'")
+GUMROAD_PRODUCT_PERMALINK = os.getenv("GUMROAD_PRODUCT_PERMALINK", "udody").strip().strip('"').strip("'")
 
 # Print config on startup for debugging
+print(f"[CONFIG] Gumroad Key Raw: '{os.getenv('GUMROAD_API_KEY', '')}'")
 print(f"[CONFIG] Gumroad Key Configured: {'Yes' if GUMROAD_API_KEY else 'No'}")
 print(f"[CONFIG] Gumroad Permalink: {GUMROAD_PRODUCT_PERMALINK}")
 
