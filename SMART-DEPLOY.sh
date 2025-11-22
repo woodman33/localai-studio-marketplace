@@ -182,17 +182,7 @@ services:
       retries: 3
 COMPOSE_EOF
 
-# Phase 5: Create Environment File & Load Variables
-echo ""
-echo "⚙️ Phase 5: Creating environment configuration..."
 
-cat > .env << 'ENV_EOF'
-SKIP_PAYMENT=true
-STRIPE_SECRET_KEY=sk_test_PLACEHOLDER
-STRIPE_PUBLISHABLE_KEY=pk_test_PLACEHOLDER
-STRIPE_WEBHOOK_SECRET=whsec_PLACEHOLDER
-FRONTEND_URL=https://localai.studio
-ENV_EOF
 
 # Load variables for injection into docker-compose
 # We use a simple grep to extract values since sourcing is proving unreliable in this context
