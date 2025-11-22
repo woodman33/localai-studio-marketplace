@@ -711,19 +711,7 @@ async def check_license(license_key: Optional[str] = Query(None), cookie_key: Op
         validation_result = await validate_license(LicenseRequest(license_key=final_key))
         # ... rest of function ...
 
-@app.get("/api/debug/config")
-async def debug_config():
-    """
-    Debug endpoint to check environment configuration
-    """
-    return {
-        "gumroad_key_configured": bool(GUMROAD_API_KEY),
-        "gumroad_key_length": len(GUMROAD_API_KEY) if GUMROAD_API_KEY else 0,
-        "gumroad_key_preview": f"{GUMROAD_API_KEY[:5]}..." if GUMROAD_API_KEY else "None",
-        "gumroad_permalink": GUMROAD_PRODUCT_PERMALINK,
-        "frontend_url": FRONTEND_URL,
-        "skip_payment": SKIP_PAYMENT
-    }
+
 
         # Extract JSON from JSONResponse if needed
         if isinstance(validation_result, JSONResponse):
@@ -749,6 +737,20 @@ async def debug_config():
         "models": FREE_MODELS,
         "message": "Free tier (3 models)"
     })
+
+@app.get("/api/debug/config")
+async def debug_config():
+    """
+    Debug endpoint to check environment configuration
+    """
+    return {
+        "gumroad_key_configured": bool(GUMROAD_API_KEY),
+        "gumroad_key_length": len(GUMROAD_API_KEY) if GUMROAD_API_KEY else 0,
+        "gumroad_key_preview": f"{GUMROAD_API_KEY[:5]}..." if GUMROAD_API_KEY else "None",
+        "gumroad_permalink": GUMROAD_PRODUCT_PERMALINK,
+        "frontend_url": FRONTEND_URL,
+        "skip_payment": SKIP_PAYMENT
+    }
 
 @app.get("/api/models/available")
 async def get_available_models(license_key: Optional[str] = Cookie(None)):
