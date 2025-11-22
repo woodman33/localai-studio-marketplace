@@ -40,13 +40,18 @@ if STRIPE_SECRET_KEY and not STRIPE_SECRET_KEY.startswith("PLACEHOLDER"):
     stripe.api_key = STRIPE_SECRET_KEY
 
 # Gumroad configuration for instant monetization
-GUMROAD_API_KEY = os.getenv("GUMROAD_API_KEY", "").strip().strip('"').strip("'")
-GUMROAD_PRODUCT_PERMALINK = os.getenv("GUMROAD_PRODUCT_PERMALINK", "udody").strip().strip('"').strip("'")
+try:
+    GUMROAD_API_KEY = os.getenv("GUMROAD_API_KEY", "").strip().strip('"').strip("'")
+    GUMROAD_PRODUCT_PERMALINK = os.getenv("GUMROAD_PRODUCT_PERMALINK", "udody").strip().strip('"').strip("'")
 
-# Print config on startup for debugging
-print(f"[CONFIG] Gumroad Key Raw: '{os.getenv('GUMROAD_API_KEY', '')}'")
-print(f"[CONFIG] Gumroad Key Configured: {'Yes' if GUMROAD_API_KEY else 'No'}")
-print(f"[CONFIG] Gumroad Permalink: {GUMROAD_PRODUCT_PERMALINK}")
+    # Print config on startup for debugging
+    print(f"[CONFIG] Gumroad Key Raw: '{os.getenv('GUMROAD_API_KEY', '')}'")
+    print(f"[CONFIG] Gumroad Key Configured: {'Yes' if GUMROAD_API_KEY else 'No'}")
+    print(f"[CONFIG] Gumroad Permalink: {GUMROAD_PRODUCT_PERMALINK}")
+except Exception as e:
+    print(f"[CONFIG] ERROR loading Gumroad config: {e}")
+    GUMROAD_API_KEY = ""
+    GUMROAD_PRODUCT_PERMALINK = "udody"
 
 # License key cache (upgrade to DB later if needed)
 VALID_LICENSES = set()
