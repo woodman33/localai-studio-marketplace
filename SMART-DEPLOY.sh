@@ -87,6 +87,7 @@ echo "⚙️ Phase 4: Creating environment configuration..."
 
 # Only create if it doesn't exist to avoid overwriting user keys
 if [ ! -f .env ]; then
+    echo "   Creating new .env file..."
     cat > .env << 'ENV_EOF'
 SKIP_PAYMENT=true
 STRIPE_SECRET_KEY=sk_test_PLACEHOLDER
@@ -95,6 +96,8 @@ STRIPE_WEBHOOK_SECRET=whsec_PLACEHOLDER
 FRONTEND_URL=https://localai.studio
 GUMROAD_PRODUCT_PERMALINK=udody
 ENV_EOF
+else
+    echo "   ✅ Existing .env file found. Keeping your configuration."
 fi
 
 # Phase 5: Generate port-optimized configuration
