@@ -587,6 +587,9 @@ async def validate_license(request: LicenseRequest):
                     headers={"Authorization": f"Bearer {GUMROAD_API_KEY}"}
                 )
 
+                print(f"[LICENSE VALIDATE] Sales lookup status: {sales_response.status_code}")
+                print(f"[LICENSE VALIDATE] Sales lookup body: {sales_response.text[:1000]}")
+
                 if sales_response.status_code == 200:
                     sales_data = sales_response.json()
                     if sales_data.get("success") and len(sales_data.get("sales", [])) > 0:
@@ -594,6 +597,8 @@ async def validate_license(request: LicenseRequest):
                         
                         # Verify this sale is for our product
                         sale_permalink = sale.get("product_permalink", "")
+                        print(f"[LICENSE VALIDATE] Found sale for product: {sale_permalink}")
+                        
                         # Handle case where permalink might be full URL or just the slug
                         if GUMROAD_PRODUCT_PERMALINK in sale_permalink:
                             print(f"[LICENSE VALIDATE] ✅ Valid order ID: {license_key}")
@@ -605,7 +610,9 @@ async def validate_license(request: LicenseRequest):
                                 "message": "Valid Pro license (verified via order ID)"
                             })
                         else:
-                            print(f"[LICENSE VALIDATE] ❌ Order found but for different product: {sale_permalink}")
+                            print(f"[LICENSE VALIDATE] ❌ Order found but for different product: {sale_permalink} (expected {GUMROAD_PRODUCT_PERMALINK})")
+                    else:
+                         print(f"[LICENSE VALIDATE] ❌ Sales lookup successful but no sales found for ID")
 
                 print(f"[LICENSE VALIDATE] Both license key and order ID validation failed")
                 return JSONResponse({
