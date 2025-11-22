@@ -529,39 +529,41 @@ async def validate_license(request: LicenseRequest):
     Validate license key via Gumroad API
     Instant monetization - no Stripe approval needed
     """
-    license_key = request.license_key.strip()
-
-    print(f"\n[LICENSE VALIDATE] Received key: {license_key[:20]}..." if len(license_key) > 20 else f"\n[LICENSE VALIDATE] Received key: {license_key}")
-
-    # Development mode - accept DEV- keys for testing
-    if license_key.startswith("DEV-"):
-        VALID_LICENSES.add(license_key)
-        print(f"[LICENSE VALIDATE] Development key accepted: {license_key}")
-        return JSONResponse({
-            "valid": True,
-            "tier": "pro",
-            "message": "Development key activated"
-        })
-
-    # Check if already validated (cache)
-    if license_key in VALID_LICENSES:
-        print(f"[LICENSE VALIDATE] Key found in cache: {license_key[:20]}...")
-        return JSONResponse({"valid": True, "tier": "pro", "message": "License already validated"})
-
-    # Production: Validate with Gumroad API
-    if not GUMROAD_API_KEY or GUMROAD_API_KEY == "":
-        print("[LICENSE VALIDATE] ERROR: Gumroad API key not configured")
-        return JSONResponse({
-            "valid": False,
-            "message": "Gumroad not configured. Use DEV-TEST-KEY for testing."
-        })
-
     try:
+        license_key = request.license_key.strip()
+
+        print(f"\n[LICENSE VALIDATE] Received key: {license_key[:20]}..." if len(license_key) > 20 else f"\n[LICENSE VALIDATE] Received key: {license_key}")
+
+        # Development mode - accept DEV- keys for testing
+        if license_key.startswith("DEV-"):
+            VALID_LICENSES.add(license_key)
+            print(f"[LICENSE VALIDATE] Development key accepted: {license_key}")
+            return JSONResponse({
+                "valid": True,
+                "tier": "pro",
+                "message": "Development key activated"
+            })
+
+        # Check if already validated (cache)
+        if license_key in VALID_LICENSES:
+            print(f"[LICENSE VALIDATE] Key found in cache: {license_key[:20]}...")
+            return JSONResponse({"valid": True, "tier": "pro", "message": "License already validated"})
+
+        # Production: Validate with Gumroad API
+        if not GUMROAD_API_KEY or GUMROAD_API_KEY == "":
+            print("[LICENSE VALIDATE] ERROR: Gumroad API key not configured")
+            return JSONResponse({
+                "valid": False,
+                "message": "Gumroad not configured. Use DEV-TEST-KEY for testing."
+            })
+
         print(f"[LICENSE VALIDATE] Calling Gumroad API...")
         print(f"[LICENSE VALIDATE] Product permalink: {GUMROAD_PRODUCT_PERMALINK}")
-        print(f"[LICENSE VALIDATE] API key configured: {GUMROAD_API_KEY[:10]}...")
+        # Safe print of API key
+        safe_key = GUMROAD_API_KEY[:10] + "..." if GUMROAD_API_KEY and len(GUMROAD_API_KEY) > 10 else "INVALID"
+        print(f"[LICENSE VALIDATE] API key configured: {safe_key}")
 
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        async with httpx.AsyncClient(timeout=15.0) as client:
             # Try license key verification first
             response = await client.post(
                 "https://api.gumroad.com/v2/licenses/verify",
@@ -588,7 +590,10 @@ async def validate_license(request: LicenseRequest):
                 )
 
                 print(f"[LICENSE VALIDATE] Sales lookup status: {sales_response.status_code}")
-                print(f"[LICENSE VALIDATE] Sales lookup body: {sales_response.text[:1000]}")
+                try:
+                    print(f"[LICENSE VALIDATE] Sales lookup body: {sales_response.text[:1000]}")
+                except:
+                    pass
 
                 if sales_response.status_code == 200:
                     sales_data = sales_response.json()
@@ -599,26 +604,43 @@ async def validate_license(request: LicenseRequest):
                         sale_permalink = sale.get("product_permalink", "")
                         print(f"[LICENSE VALIDATE] Found sale for product: {sale_permalink}")
                         
-                        # Handle case where permalink might be full URL or just the slug
-                        if GUMROAD_PRODUCT_PERMALINK in sale_permalink:
-                            print(f"[LICENSE VALIDATE] ✅ Valid order ID: {license_key}")
+                        if sale_permalink == GUMROAD_PRODUCT_PERMALINK:
                             VALID_LICENSES.add(license_key)
+                            print(f"[LICENSE VALIDATE] Order ID validated successfully!")
                             return JSONResponse({
                                 "valid": True,
                                 "tier": "pro",
-                                "purchaser_email": sale.get("email", "unknown"),
-                                "message": "Valid Pro license (verified via order ID)"
+                                "message": "Pro license activated via Order ID!"
                             })
-                        else:
-                            print(f"[LICENSE VALIDATE] ❌ Order found but for different product: {sale_permalink} (expected {GUMROAD_PRODUCT_PERMALINK})")
-                    else:
-                         print(f"[LICENSE VALIDATE] ❌ Sales lookup successful but no sales found for ID")
 
-                print(f"[LICENSE VALIDATE] Both license key and order ID validation failed")
+            # Process standard license verification response
+            data = response.json()
+            
+            if data.get("success") and data.get("purchase", {}).get("refunded") is not True:
+                VALID_LICENSES.add(license_key)
+                print(f"[LICENSE VALIDATE] License validated successfully!")
+                return JSONResponse({
+                    "valid": True,
+                    "tier": "pro",
+                    "message": "Pro license activated!"
+                })
+            else:
+                print(f"[LICENSE VALIDATE] Validation failed: {data}")
                 return JSONResponse({
                     "valid": False,
-                    "message": "Invalid license key or order ID"
+                    "message": "Invalid license key or order ID."
                 })
+
+    except Exception as e:
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f"[LICENSE VALIDATE] CRITICAL ERROR: {e}")
+        print(error_trace)
+        return JSONResponse({
+            "valid": False,
+            "message": f"Server Error: {str(e)}"
+        }, status_code=500)
+
 
             print(f"[LICENSE VALIDATE] Gumroad response status: {response.status_code}")
             print(f"[LICENSE VALIDATE] Gumroad response body: {response.text[:500]}")
@@ -675,9 +697,6 @@ async def validate_license(request: LicenseRequest):
             "message": f"Validation error: {str(e)}"
         })
 
-from fastapi import FastAPI, HTTPException, Cookie, Request, Query
-
-# ... (imports remain the same)
 
 @app.get("/api/license/check")
 async def check_license(license_key: Optional[str] = Query(None), cookie_key: Optional[str] = Cookie(None, alias="license_key")):
