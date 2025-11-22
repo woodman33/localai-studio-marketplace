@@ -613,6 +613,21 @@ async def validate_license(request: LicenseRequest):
                             print(f"[LICENSE VALIDATE] ❌ Order found but for different product: {sale_permalink} (expected {GUMROAD_PRODUCT_PERMALINK})")
                     else:
                          print(f"[LICENSE VALIDATE] ❌ Sales lookup successful but no sales found for ID")
+                         
+                         # DEBUG: List recent sales to see what's going on
+                         print(f"[LICENSE VALIDATE] DEBUG: Fetching recent sales to verify format...")
+                         recent_sales_response = await client.get(
+                             "https://api.gumroad.com/v2/sales",
+                             headers={"Authorization": f"Bearer {GUMROAD_API_KEY}"}
+                         )
+                         if recent_sales_response.status_code == 200:
+                             recent_data = recent_sales_response.json()
+                             sales = recent_data.get("sales", [])
+                             print(f"[LICENSE VALIDATE] DEBUG: Found {len(sales)} recent sales.")
+                             for i, s in enumerate(sales[:5]):
+                                 print(f"[LICENSE VALIDATE] Sale {i+1}: Order ID='{s.get('order_id')}', Product='{s.get('product_permalink')}', Price='{s.get('formatted_total_price')}'")
+                         else:
+                             print(f"[LICENSE VALIDATE] DEBUG: Failed to fetch recent sales: {recent_sales_response.status_code}")
 
                 print(f"[LICENSE VALIDATE] Both license key and order ID validation failed")
                 return JSONResponse({
