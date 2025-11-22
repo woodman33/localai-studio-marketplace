@@ -100,40 +100,32 @@ else
     echo "   ✅ Existing .env file found. Keeping your configuration."
 fi
 
-# Clean up .env file (remove duplicates, fix newlines)
-echo "   🧹 Cleaning up .env file..."
-python3 -c "
-import os
-env_path = '.env'
-if os.path.exists(env_path):
-    try:
-        with open(env_path, 'r') as f:
-            lines = f.readlines()
-        
-        config = {}
-        # Process lines in order, keeping the LAST occurrence of each key
-        for line in lines:
-            line = line.strip()
-            if '=' in line and not line.startswith('#'):
-                key, value = line.split('=', 1)
-                config[key] = value
-        
-        # Write back cleanly
-        with open(env_path, 'w') as f:
-            for key, value in config.items():
-                f.write(f'{key}={value}\n')
-        print('   ✅ .env file formatted and deduplicated')
-        
-        # Verify Gumroad key exists
-        if 'GUMROAD_API_KEY' not in config or not config['GUMROAD_API_KEY']:
-            print('   ⚠️  WARNING: GUMROAD_API_KEY is missing or empty in .env!')
-        else:
-            k = config['GUMROAD_API_KEY']
-            print(f'   🔑 Found Gumroad Key: {k[:5]}...')
-            
-    except Exception as e:
-        print(f'   ❌ Error cleaning .env: {e}')
-"
+    echo "   ✅ Existing .env file found. Keeping your configuration."
+fi
+
+# Ensure .env ends with a newline
+if [ -f .env ] && [ -n "$(tail -c 1 .env)" ]; then
+    echo "" >> .env
+fi
+
+# Check for GUMROAD_API_KEY and prompt if missing
+if ! grep -q "GUMROAD_API_KEY" .env; then
+    echo ""
+    echo "⚠️  GUMROAD_API_KEY is missing from .env!"
+    echo "   Please paste your Gumroad Access Token below and press Enter:"
+    read -r USER_GUMROAD_KEY
+    
+    if [ -n "$USER_GUMROAD_KEY" ]; then
+        # Strip quotes and whitespace just in case
+        CLEAN_KEY=$(echo "$USER_GUMROAD_KEY" | tr -d '"' | tr -d "'")
+        echo "GUMROAD_API_KEY=$CLEAN_KEY" >> .env
+        echo "   ✅ Key saved to .env file."
+    else
+        echo "   ❌ No key entered. The backend may fail to validate licenses."
+    fi
+else
+    echo "   ✅ Gumroad API Key found in .env"
+fi
 
 # Phase 5: Generate port-optimized configuration
 echo ""
