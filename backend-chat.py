@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Cookie, Request
+from fastapi import FastAPI, HTTPException, Cookie, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
