@@ -100,15 +100,27 @@ fi
 # Load variables for injection into docker-compose
 # Use Python for robust .env parsing (handles spaces, quotes, comments)
 echo "   Reading .env file..."
+if [ -f .env ]; then
+    echo "   .env file exists. Content preview:"
+    head -n 5 .env | sed 's/./& /g' # Print with spaces to see hidden chars
+else
+    echo "   ❌ .env file NOT found!"
+fi
+
 GUMROAD_KEY=$(python3 -c "
 import re
+import sys
 try:
     with open('.env', 'r') as f:
         content = f.read()
         # Look for GUMROAD_API_KEY = value (ignoring spaces and quotes)
         match = re.search(r'GUMROAD_API_KEY\s*=\s*[\"\']?([^\"\n\r\']+)[\"\']?', content)
-        if match: print(match.group(1).strip())
-except Exception as e: print('')
+        if match: 
+            print(match.group(1).strip())
+        else:
+            sys.stderr.write('Python regex failed to match GUMROAD_API_KEY\n')
+except Exception as e: 
+    sys.stderr.write(f'Python error: {e}\n')
 ")
 
 GUMROAD_PERMALINK=$(python3 -c "
@@ -122,10 +134,10 @@ try:
 except: print('udody')
 ")
 
+echo "   Debug: Extracted Key Length: ${#GUMROAD_KEY}"
 if [ -z "$GUMROAD_KEY" ]; then
-    echo "❌ ERROR: GUMROAD_API_KEY not found in .env file!"
+    echo "❌ ERROR: GUMROAD_API_KEY extraction failed!"
     echo "   Please ensure your .env file contains: GUMROAD_API_KEY=your_key_here"
-    # Don't exit, but warn loudly
 else
     echo "   ✅ Found Gumroad API Key (starts with ${GUMROAD_KEY:0:4}...)"
 fi
