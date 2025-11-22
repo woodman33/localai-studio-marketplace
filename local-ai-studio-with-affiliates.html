@@ -395,98 +395,95 @@
         background: transparent;
       }
 
-      .affiliate-sidebar::-webkit-scrollbar-thumb {
+      .cloud-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .cloud-sidebar::-webkit-scrollbar-thumb {
         background: var(--border);
         border-radius: 3px;
       }
 
-      .affiliate-section {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+      /* Cloud Section (Renamed from Affiliate) */
+      .cloud-section {
+        margin-top: 3rem;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 16px;
-        padding: 1.25rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: all 0.3s var(--ease-smooth);
       }
 
-      .affiliate-section:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(0, 217, 255, 0.4);
+      .cloud-section:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary);
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 217, 255, 0.15);
       }
 
-      .affiliate-section h3 {
-        font-size: 0.875rem;
-        color: var(--cyan);
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .affiliate-disclaimer {
-        font-size: 0.625rem;
-        color: var(--text-secondary);
-        margin-bottom: 0.75rem;
-        font-style: italic;
-      }
-
-      .affiliate-links {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-
-      .affiliate-link {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        padding: 0.75rem;
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
-        text-decoration: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      }
-
-      .affiliate-link:hover {
-        background: rgba(0, 217, 255, 0.08);
-        border-color: rgba(0, 217, 255, 0.4);
-        transform: translateX(-3px);
-        box-shadow: 0 4px 12px rgba(0, 217, 255, 0.15);
-      }
-
-      .affiliate-link-name {
-        font-size: 0.875rem;
-        font-weight: 600;
+      .cloud-section h3 {
+        font-size: 1.25rem;
         color: var(--text);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
       }
 
-      .affiliate-link-desc {
+      .cloud-disclaimer {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+      }
+
+      .cloud-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .cloud-link {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cloud-link:hover {
+        background: rgba(99, 102, 241, 0.1);
+        border-color: var(--primary);
+      }
+
+      .cloud-link-name {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .cloud-link-desc {
         font-size: 0.75rem;
         color: var(--text-secondary);
         line-height: 1.4;
       }
 
-      .affiliate-link-badge {
-        display: inline-block;
-        padding: 0.125rem 0.5rem;
-        background: rgba(16, 185, 129, 0.1);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        border-radius: 6px;
-        font-size: 0.625rem;
-        color: var(--green);
-        font-weight: 600;
+      .cloud-link-badge {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #10b981;
+        color: white;
+        font-size: 0.6rem;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        font-weight: 700;
         text-transform: uppercase;
-        margin-top: 0.25rem;
-        width: fit-content;
         box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
       }
 
@@ -2798,37 +2795,36 @@
           </div>
         </div>
 
-        <div class="affiliate-section">
+        <div class="cloud-section">
           <h3>☁️ Cloud GPU Inference</h3>
-          <p class="affiliate-disclaimer">
+          <p class="cloud-disclaimer">
             Deploy massive models with cloud GPUs
           </p>
-          <div class="affiliate-links">
+          <div class="cloud-links">
             <a
               href="https://app.hyperbolic.ai/invite/llUtil8hH"
               target="_blank"
-              class="affiliate-link"
+              class="cloud-link"
             >
-              <span class="affiliate-link-name">Hyperbolic</span>
-              <span class="affiliate-link-desc"
+              <span class="cloud-link-name">Hyperbolic</span>
+              <span class="cloud-link-desc"
                 >Open-source cloud GPU for AI inference</span
               >
-              <span class="affiliate-link-badge">Free Tier</span>
+              <span class="cloud-link-badge">Free Tier</span>
             </a>
             <a
               href="https://cloud.cerebras.ai?referral_code=n24vxp64"
               target="_blank"
-              class="affiliate-link"
+              class="cloud-link"
             >
-              <span class="affiliate-link-name">Cerebras</span>
-              <span class="affiliate-link-desc"
+              <span class="cloud-link-name">Cerebras</span>
+              <span class="cloud-link-desc"
                 >Ultra-fast AI on specialized hardware</span
               >
             </a>
           </div>
         </div>
 
-        <div class="affiliate-section">
       <!-- Partners Section (Renamed from Affiliates) -->
       <section class="partners-section" id="partners-section">
         <div class="partners-container">
