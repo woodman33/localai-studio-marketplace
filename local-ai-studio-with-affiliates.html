@@ -2971,7 +2971,7 @@
                 <div class="license-form">
                     <div class="input-group">
                         <label>Already purchased? Enter License Key:</label>
-                        <input type="text" id="licenseKeyInput" placeholder="ABCD-1234-EFGH-5678" />
+                        <input type="text" id="licenseKeyInput" placeholder="ABCD-1234-EFGH-5678" class="license-input" />
                         <div id="licenseError" class="error-msg"></div>
                         <div id="licenseSuccess" class="success-msg"></div>
                     </div>
@@ -2995,6 +2995,14 @@
       // Open Gumroad purchase page
       function openGumroad() {
         window.open(GUMROAD_PRODUCT_URL, "_blank");
+      }
+
+      // Deactivate license (for testing/reset)
+      function deactivateLicense() {
+        if(confirm('Are you sure you want to deactivate your Pro license?')) {
+            localStorage.removeItem('licenseKey');
+            window.location.reload();
+        }
       }
 
       // Activate license key
