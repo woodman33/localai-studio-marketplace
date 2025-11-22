@@ -161,7 +161,10 @@ chmod 755 /root/localai-studio-marketplace/data/backend
 echo ""
 # Load environment variables from .env if present
 if [ -f .env ]; then
-  export $(grep -v '^#' .env | xargs)
+  echo "Loading environment variables from .env..."
+  set -a
+  source .env
+  set +a
 fi
 
 echo "🏗️ Phase 7: Building Docker images..."
