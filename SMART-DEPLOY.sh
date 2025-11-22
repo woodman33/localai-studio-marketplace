@@ -98,12 +98,37 @@ ENV_EOF
 fi
 
 # Load variables for injection into docker-compose
-# We use a simple grep to extract values since sourcing is proving unreliable in this context
-GUMROAD_KEY=$(grep "^GUMROAD_API_KEY=" .env | cut -d '=' -f2- | tr -d '"' | tr -d "'" || echo "")
-GUMROAD_PERMALINK=$(grep "^GUMROAD_PRODUCT_PERMALINK=" .env | cut -d '=' -f2- | tr -d '"' | tr -d "'" || echo "udody")
+# Use Python for robust .env parsing (handles spaces, quotes, comments)
+echo "   Reading .env file..."
+GUMROAD_KEY=$(python3 -c "
+import re
+try:
+    with open('.env', 'r') as f:
+        content = f.read()
+        # Look for GUMROAD_API_KEY = value (ignoring spaces and quotes)
+        match = re.search(r'GUMROAD_API_KEY\s*=\s*[\"\']?([^\"\n\r\']+)[\"\']?', content)
+        if match: print(match.group(1).strip())
+except Exception as e: print('')
+")
 
-echo "   Gumroad Key found: ${GUMROAD_KEY:0:5}..."
-echo "   Gumroad Permalink: $GUMROAD_PERMALINK"
+GUMROAD_PERMALINK=$(python3 -c "
+import re
+try:
+    with open('.env', 'r') as f:
+        content = f.read()
+        match = re.search(r'GUMROAD_PRODUCT_PERMALINK\s*=\s*[\"\']?([^\"\n\r\']+)[\"\']?', content)
+        if match: print(match.group(1).strip())
+        else: print('udody')
+except: print('udody')
+")
+
+if [ -z "$GUMROAD_KEY" ]; then
+    echo "❌ ERROR: GUMROAD_API_KEY not found in .env file!"
+    echo "   Please ensure your .env file contains: GUMROAD_API_KEY=your_key_here"
+    # Don't exit, but warn loudly
+else
+    echo "   ✅ Found Gumroad API Key (starts with ${GUMROAD_KEY:0:4}...)"
+fi
 
 # Phase 5: Generate port-optimized configuration
 echo ""
