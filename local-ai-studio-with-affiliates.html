@@ -1327,6 +1327,20 @@
         box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
       }
 
+      .upgrade-btn {
+        background: linear-gradient(135deg, #ec4899, #8b5cf6);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s var(--ease-smooth);
+        box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        position: relative;
+        z-index: 50;
+      }
+
       .progress-close.visible {
         display: block;
       }
@@ -1456,21 +1470,6 @@
           135deg,
           rgba(17, 28, 68, 0.95),
           rgba(124, 58, 237, 0.2)
-        );
-        backdrop-filter: blur(40px);
-        -webkit-backdrop-filter: blur(40px);
-        border: 2px solid rgba(0, 217, 255, 0.3);
-        border-radius: 24px;
-        padding: 3rem;
-        max-width: 600px;
-        width: 90%;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-        transform: scale(0.9);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        max-height: 90vh;
-        overflow-y: auto;
-      }
-
       .modal.active .modal-content {
         transform: scale(1);
       }
@@ -1494,6 +1493,85 @@
         font-size: 1rem;
         line-height: 1.6;
       }
+
+      /* Partners Section (Renamed from Affiliates to avoid ad-blockers) */
+      .partners-section {
+        padding: 6rem 2rem;
+        background: linear-gradient(
+          180deg,
+          rgba(17, 28, 68, 0) 0%,
+          rgba(6, 182, 212, 0.05) 50%,
+          rgba(17, 28, 68, 0) 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+
+      .partners-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .partners-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .partners-header h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+      }
+
+      .partners-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .partner-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        transition: all 0.3s var(--ease-smooth);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .partner-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--cyan);
+        box-shadow: 0 10px 30px rgba(6, 182, 212, 0.15);
+      }
+
+      .partner-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .partner-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+
+      .partner-desc {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
 
       .pricing-card {
         background: rgba(16, 185, 129, 0.1);
@@ -2659,47 +2737,50 @@
         </div>
 
         <div class="affiliate-section">
-          <h3>🤖 Compare AI Models</h3>
-          <p class="affiliate-disclaimer">Try 20+ models side-by-side</p>
-          <div class="affiliate-links">
+      <!-- Partners Section (Renamed from Affiliates) -->
+      <section class="partners-section" id="partners-section">
+        <div class="partners-container">
+          <div class="partners-header">
+            <h2>Trusted Partners</h2>
+            <p>
+              Join thousands of developers building the future of local AI with
+              our ecosystem partners.
+            </p>
+          </div>
+          <div class="partners-grid">
             <a
-              href="https://www.chatplayground.ai/?ref=kraftforge-labs"
+              href="https://github.com/mudler/LocalAI"
               target="_blank"
-              class="affiliate-link"
+              class="partner-card"
             >
-              <span class="affiliate-link-name">Chat Playground</span>
-              <span class="affiliate-link-desc"
-                >Compare Claude, GPT-4, Gemini, and more</span
-              >
+              <div class="partner-icon">🚀</div>
+              <div class="partner-name">LocalAI Core</div>
+              <div class="partner-desc">
+                The engine powering our studio. Drop-in replacement for OpenAI
+                API.
+              </div>
+            </a>
+            <a href="https://ollama.com" target="_blank" class="partner-card">
+              <div class="partner-icon">🦙</div>
+              <div class="partner-name">Ollama</div>
+              <div class="partner-desc">
+                Get up and running with large language models locally.
+              </div>
             </a>
             <a
-              href="https://chatllm.abacus.ai/VzkYfFwdsy"
+              href="https://huggingface.co"
               target="_blank"
-              class="affiliate-link"
+              class="partner-card"
             >
-              <span class="affiliate-link-name">ChatLLM</span>
-              <span class="affiliate-link-desc">Enterprise LLM platform</span>
+              <div class="partner-icon">🤗</div>
+              <div class="partner-name">Hugging Face</div>
+              <div class="partner-desc">
+                The AI community building the future. Source of our models.
+              </div>
             </a>
           </div>
         </div>
-
-        <div class="affiliate-section">
-          <h3>🎨 AI Image Generation</h3>
-          <p class="affiliate-disclaimer">Stable Diffusion API access</p>
-          <div class="affiliate-links">
-            <a
-              href="https://modelslab.com?via=will-meldman827"
-              target="_blank"
-              class="affiliate-link"
-            >
-              <span class="affiliate-link-name">Modelslab</span>
-              <span class="affiliate-link-desc"
-                >Stable Diffusion + custom models API</span
-              >
-            </a>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
 
     <!-- Progress Modal -->
