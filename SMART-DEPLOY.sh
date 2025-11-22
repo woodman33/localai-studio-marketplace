@@ -103,7 +103,10 @@ services:
       - STRIPE_PUBLISHABLE_KEY=\${STRIPE_PUBLISHABLE_KEY:-pk_test_PLACEHOLDER}
       - STRIPE_WEBHOOK_SECRET=\${STRIPE_WEBHOOK_SECRET:-whsec_PLACEHOLDER}
       - SKIP_PAYMENT=\${SKIP_PAYMENT:-true}
+      - SKIP_PAYMENT=\${SKIP_PAYMENT:-true}
       - FRONTEND_URL=\${FRONTEND_URL:-https://localai.studio}
+      - GUMROAD_API_KEY=\${GUMROAD_API_KEY}
+      - GUMROAD_PRODUCT_PERMALINK=\${GUMROAD_PRODUCT_PERMALINK:-udody}
     volumes:
       - ./data/backend:/app/data
     restart: unless-stopped
