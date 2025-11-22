@@ -1470,6 +1470,21 @@
           135deg,
           rgba(17, 28, 68, 0.95),
           rgba(124, 58, 237, 0.2)
+        );
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+        border: 2px solid rgba(0, 217, 255, 0.3);
+        border-radius: 24px;
+        padding: 3rem;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
       .modal.active .modal-content {
         transform: scale(1);
       }
