@@ -100,6 +100,41 @@ else
     echo "   ✅ Existing .env file found. Keeping your configuration."
 fi
 
+# Clean up .env file (remove duplicates, fix newlines)
+echo "   🧹 Cleaning up .env file..."
+python3 -c "
+import os
+env_path = '.env'
+if os.path.exists(env_path):
+    try:
+        with open(env_path, 'r') as f:
+            lines = f.readlines()
+        
+        config = {}
+        # Process lines in order, keeping the LAST occurrence of each key
+        for line in lines:
+            line = line.strip()
+            if '=' in line and not line.startswith('#'):
+                key, value = line.split('=', 1)
+                config[key] = value
+        
+        # Write back cleanly
+        with open(env_path, 'w') as f:
+            for key, value in config.items():
+                f.write(f'{key}={value}\n')
+        print('   ✅ .env file formatted and deduplicated')
+        
+        # Verify Gumroad key exists
+        if 'GUMROAD_API_KEY' not in config or not config['GUMROAD_API_KEY']:
+            print('   ⚠️  WARNING: GUMROAD_API_KEY is missing or empty in .env!')
+        else:
+            k = config['GUMROAD_API_KEY']
+            print(f'   🔑 Found Gumroad Key: {k[:5]}...')
+            
+    except Exception as e:
+        print(f'   ❌ Error cleaning .env: {e}')
+"
+
 # Phase 5: Generate port-optimized configuration
 echo ""
 echo "📝 Phase 5: Generating port-optimized configuration..."
@@ -207,7 +242,10 @@ docker compose -f docker-compose.smart.yml build --no-cache
 echo ""
 echo "🚀 Phase 8: Starting services..."
 
-docker compose -f docker-compose.smart.yml up -d
+# Force down to clear any cached config/env
+docker compose -f docker-compose.smart.yml down --remove-orphans
+
+docker compose -f docker-compose.smart.yml up -d --remove-orphans
 
 # Wait for health checks
 echo ""
